@@ -1,13 +1,24 @@
 # yAcademy Summa Version B Review
 
 Auditors:
+- [0xkarl98](https://github.com/0xkarl98)
+- [0xpanicError](https://github.com/0xpanicError)
+- [bbresearcher](https://github.com/bbresearcher)
+- [flyingnobita](https://github.com/flyingnobita)
+- [hrishibhat](https://github.com/hrishibhat)
+- [igorline](https://github.com/igorline)
+- [kiseln](https://github.com/kiseln)
+- [nullity00](https://github.com/nullity00)
+- [obatirou](https://github.com/obatirou)
+- [qpzm](https://github.com/qpzm)
 - [rkdud007](https://github.com/rkdud007)
 - [sachindkagrawal15](https://github.com/sachindkagrawal15)
-- [qpzm](https://github.com/qpzm)
+- [sebastiantf](https://github.com/sebastiantf)
+- [teddav](https://github.com/teddav/)
+- [thogiti](https://github.com/thogiti)
+- [Y5Yash](https://github.com/Y5Yash)
+- [yagnadeepxo](https://github.com/yagnadeepxo)
 - [zeroqn](https://github.com/zeroqn)
-- [bbresearcher](https://github.com/bbresearcher)
-- [hrishibhat](https://github.com/hrishibhat)
-- [obatirou](https://github.com/obatirou)
 
 ## Table of Contents
 ## Protocol Summary
