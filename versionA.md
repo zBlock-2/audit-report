@@ -138,9 +138,7 @@ By: **sebastiantf**
 The [`publicInputs`](https://github.com/zBlock-2/summa-solvency-schneier/blob/main/contracts/src/Summa.sol#L193) input to the contract is taken as an array. But its not a homogenous array. The expected [public inputs](https://summa.gitbook.io/summa-book/circuits/merkle-sum-tree-inclusion#public-inputs-outputs) are: user leaf hash, MST root followed by root balances:
 https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L188-L197
 
-Since they are not homogenous or not values that have the same meaning, it might be better DX/UX to have them as separate meaningful inputs and combine them into an array within the function before submitting them to the verifier. eg. how the zkDrops contract does it: https://github.com/a16z/zkdrops/blob/a4e58bdad8391ffc133c3643c449be5d18b69832/zkdrops-contracts/contracts/PrivateAirdrop.sol#L42-L46
-<img width="737" alt="Screenshot 2024-02-27 at 12 22 25 PM" src="https://github.com/zBlock-2/summa-solvency-schneier/assets/36922376/45941ac9-605c-4e4f-806f-1476eacf18ac">
-
+Since they are not homogenous or not values that have the same meaning, it might be better DX/UX to have them as separate meaningful inputs and combine them into an array within the function before submitting them to the verifier. 
 
 ### 4. Informational: [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11)
 By: **sebastiantf**
