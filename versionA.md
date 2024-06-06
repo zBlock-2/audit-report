@@ -76,7 +76,9 @@ Findings are broken down into sections by their respective Impact:
 By: **sebastiantf, bbresearcher**
 
 **NB Need to give credit to Jin.s for the guidance to find the bug**
+
 **Describe the bug**
+
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
 
@@ -93,17 +95,11 @@ Furthermore, since N_BYTES is not exposed in the contract, users must run `examp
 By: **Y5Yash**
 
 **Background**
+
 The circuit checks for all levels in the tree if the sibling node's balance (and two leaf balances) is less than `m = 2 ** (NBYTES * 8)`. In the first look, this suggests that the max balance for the immediate parent of the leaf nodes at level 1 would be `2 * m` and the parent at level 2 would be `3 * m`, ..., and the max balance at the root will be `(NLEVEL - 1) * m`.
 
-**The inconsistency**
-Let's consider two scenarios for a tree with just four leaves. Scenario 1: The user corresponding to Leaf 1 generates a proof. Scenario 2: The user corresponding to Leaf 3 generates a proof. The following diagram represents node balance range checks. A green node represents a direct check in the circuit, and a red node represents forced ranges.
-
-![Summa_inconsistent_scenario_1](https://github.com/teddav/summa/assets/30973335/6723cf91-3c24-4282-aa45-94239289480c)
-![Summa_inconsistent_scenario_2](https://github.com/teddav/summa/assets/30973335/ae7626fc-15cf-44d6-9d1b-094ba714d8fd)
-
-Notice that depending on which leaf is generating the proof, the inner nodes have different ranges of values allowed. For all the cases to be consistent together, the root node can't be more than `2 * m` (because you can find cases in which either of the root's children are checked to have max value `m`).
-
 **Expected behavior**
+
 Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contracts.
 
 
@@ -112,6 +108,7 @@ Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contra
 By: **bbresearcher**
 
 **Describe the bug**
+
 In the code here https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/utils/operation_helpers.rs#L5-L17 ,
 In specific big_intify_username uses big-endian and fp_to_big_uint uses little-endian.
 
@@ -176,6 +173,7 @@ The root cause of the issue can be slightly linked to the first issue, The hash 
 By: **zzzuhaibmohd**
 
 **Describe the bug**
+
 The contracts `Summa.sol` does not implement a 2-Step-Process for transferring ownership.
 So ownership of the contract can easily be lost when making a mistake when transferring ownership.
 
