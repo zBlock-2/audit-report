@@ -21,6 +21,18 @@ Auditors:
 - [zeroqn](https://github.com/zeroqn)
 
 ## Table of Contents
+- [Protocol Summary](#protocol-summary)
+- [Protocol Goals](#protocol-goals)
+- [Scope](#scope)
+- [Code Evaluation Matrix](#code-evaluation-matrix)
+- [Automated testing](#automated-testing)
+- [Fuzz testing](#fuzz-testing)
+- [Findings Explanation](#findings-explanation)
+- [Findings](#findings)
+- [Final remarks](#final-remarks)
+- [Recommendations](#recommendations)
+- [Tool Configuration](#tool-configuration)
+- [Appendix](#appendix)
 ## Protocol Summary
 ## Protocol Goals
 ## Scope
@@ -231,7 +243,7 @@ Run with command, [contract verifies the fake proof file](https://github.com/rk
 By: **bbresearcher**
 
 **Describe the bug**
-Just to surface that the same issue as on V_A still exists: https://github.com/zBlock-2/summa-solvency-diffie/issues/16
+Just to surface that the same issue as on V_A still exists: https://github.com/zBlock-2/audit-report/blob/parsely-edits/versionA.md#1-high-possible-overflow-in-username-in-big_intify_username-combined-with-calling-big_uint_to_fp-and-guarantee-usernames-stays-inside-field
 
 
 
