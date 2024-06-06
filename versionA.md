@@ -79,54 +79,6 @@ By: **sebastiantf, bbresearcher**
 **Describe the bug**
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
-Checked the bug with the developers below is a response from the developers.
-Copy/Paste from Discord chat
-```text
-Thank you for pointing that out. I understand the issue now.
-
-Let's assume we have a username converted to 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000002, and another user with the identity 0x1, both of whom share the same user identity in a Merkle sum tree. This indicates a problem, as user identities in the Merkle sum tree should not be duplicated. You've made a great observation here.
-
-In a worst-case scenario, two users share the same identity in the Merkle sum tree:
-UserA: 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000002
-UserB: 0x1
-And both have the same amount of currencies. In this case, a malicious prover might exclude one of the elements from the tree and provide the same proof to different users with different usernames.
-Although we add an assertion check for overflow, a malicious prover could bypass this. Therefore, it's important to inform users that converting their user identity over the modulus could lead to malicious activity.
-
-From the perspective of the current implementation, this issue might not affect the generation of inclusion proofs for specific users, as the backend generates proofs using the user index rather than the user identity.
-
-We should add a overflow check for username in on-chain verifier rather than rust implementation.
-```
-**Where is this code used**
-https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/circuits/merkle_sum_tree.rs#L252
-
-https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/tree.rs#L74
-
-https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/node.rs#L21
-
-
-
-**Steps to recreate**
-```rust
-    let usr1 = big_intify_username("30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000002");
-    let ua = big_uint_to_fp(&usr1);
-    println!("User1 value is : {:?}",ua);
-    let usr2 = big_intify_username("1");
-    let ub = big_uint_to_fp(&usr1);
-    println!("User2 value is : {:?}",ub);
-    if ua == ub {
-        println!("The two user values are equal");
-    }
-```
-Gives output of:
-```text
-User1 value is : 0x29fc300ca92b9374edb232c3567cceda058441c9c0c0d886ed5577f6f3ead4f2
-User2 value is : 0x29fc300ca92b9374edb232c3567cceda058441c9c0c0d886ed5577f6f3ead4f2
-The two user values are equal
-```
-
-**Expected behavior**
-Usernames should be unique all the time
-
 
 ### 2. High: [Sum balance overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10)
 By: **zeroqn**
@@ -136,30 +88,6 @@ By: **zeroqn**
 There is no range check in the circuit for the sum of balances, which poses a risk of overflow.
 
 Furthermore, since N_BYTES is not exposed in the contract, users must run `examples/gen_inclusion_verifier.rs` to obtain a warning message about the risk of overflow.
-
-
-**To Reproduce**
-Steps to reproduce the behavior:
-
-`examples/gen_inclusion_proof.rs` set `N_BYTES` to 32 and change one of `MBlfbBGI`'s balance to `21888242871839275222246405745257275088548364400416034343698204186575808495617` in `csv/entry_16.csv`.
-
-A valid proof is generated and pass verification.
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-Cannot generate valid proof
-
-**Additional context**
-Add any other context about the problem here.
-
-Perhaps we could use a new lookup argument to achieve acceptable performance?
-
-Lasso
-
-https://github.com/privacy-scaling-explorations/halo2/issues/194
-https://github.com/DoHoonKim8/halo2-lasso/pull/4
-
 
 ### 3. High: [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14)
 By: **Y5Yash**
@@ -187,11 +115,6 @@ By: **bbresearcher**
 In the code here https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/utils/operation_helpers.rs#L5-L17 ,
 In specific big_intify_username uses big-endian and fp_to_big_uint uses little-endian.
 
-**Expected behavior**
-The same endianness should be used throughout
-
-
-
 ### 1. Informational: [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18)
 By: **obatirou**
 
@@ -207,16 +130,7 @@ It is mentioned in the Summa Book on the [summa-solvency page](https://summa.git
 
 > The script will generate a new `InclusionVerifier.sol` and `InclusionVerifier.yul` contracts in [`contracts/src`](https://github.com/summa-dev/summa-solvency/tree/master/contracts/src).
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. `cd zk_prover`
-2. `cargo run --release --example gen_inclusion_verifier`
 
-**Expected behavior**
-`InclusionVerifier.yul` contracts should be generated in [contracts/src](https://github.com/summa-dev/summa-solvency/tree/master/contracts/src).
-
-**Additional context**
-This is related to the `halo2_solidity_verifier` being used for generating the smart contracts.
 
 
 ### 3. Informational: [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12)
@@ -258,33 +172,6 @@ Issue#2: `proofIndex` generation does no take into account the name of the chain
 
 The root cause of the issue can be slightly linked to the first issue, The hash calculation at [Summa.sol#L117](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L117) does not take into consideration the chain as the input during calculation. While this might not look an issue for EVM chains. But when considering a multi chain architecture, using at least two input for generating the hash is a good practice. Currently thinking of a practical impact due to this.
 
-**To Reproduce**
-Yet to update PoC
-
-**Expected behavior**
-Issue#1: `submitProofOfAddressOwnership()` does not allow to resubmit `AddressOwnershipProof` twice
-
-I my opinion , since the `submitProofOfAddressOwnership()` is permissioned(can only be called by onlyOwner), updating the message and signature should be allowed.
-
----
-Issue#2: `proofIndex` generation does no take into account the name of the chain
-
-Make the following changes in the `addressHash` generation to generate a more unique hash
-
-```diff
--- bytes32 addressHash = keccak256(
---     abi.encodePacked(_addressOwnershipProofs[i].cexAddress)
--- );
-++
-++ bytes32 addressHash = keccak256(
-++     abi.encodePacked(_addressOwnershipProofs[i].cexAddress, _addressOwnershipProofs[i].chain)
-++ );
-```
-
-**Additional context**
-Add any other context about the problem here.
-
-
 ### 6. Informational: [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6)
 By: **zzzuhaibmohd**
 
@@ -293,18 +180,6 @@ The contracts `Summa.sol` does not implement a 2-Step-Process for transferring o
 So ownership of the contract can easily be lost when making a mistake when transferring ownership.
 
 While the probability if this happening is highly unlikely, it is better to follow best security measures.
-
-**To Reproduce**
-[Summa.sol#L7](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L7)
-
-**Expected behavior**
-Consider using the **Ownable2Step** contract from OZ (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable2Step.sol) instead.
-
-The way it works is there is a `transferOwnership` to transfer the ownership and `acceptOwnership` to accept the ownership. Refer to `Ownable2Step.sol` contract linked above.
-
-**Additional context**
-Add any other context about the problem here.
-
 
 ### 7. Informational: [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4)
 By: **sebastiantf**
@@ -333,15 +208,7 @@ This would warrant if the circuit implementation supports this kind of split sub
 ### 8. Informational: [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15)
 By: **bbresearcher**
 
-**Describe the bug**
 There are hardcoded integers used in the construction of the Poseidon chips
-
-**Expected behavior**
-Either create named constants or document the values used in a comment
-
-**Additional context**
-https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/circuits/merkle_sum_tree.rs#L237-L245
-
 
 ### 9. Informational: [Review of the `Summa.sol` smart contract.](https://github.com/zBlock-2/summa-solvency-diffie/issues/12)
 By: **hrishibhat**
@@ -358,52 +225,6 @@ The CEX Owner submits proof of address ownership through `submitProofOfAddressOw
 The CEX owner submits a commitment using `submitCommitment` about its liabilities in the form of a struct that uses the Merkle root, balances of the root, and the timestamp.
 
 Once the commitment is submitted the user can then verify using the `verifyInclusionProof` function with relevant proof issued by the CEX and the public inputs against the exchange commitment for the respective timestamp that their balances are accurately represented in the CEX's Merkle tree. The verification is done by an external Inclusion verifier contract. 
-
-
-
-### Observations and Security concerns:
-
-- **No timestamp validation**:
-```
-    function submitCommitment(
-        uint256 mstRoot,
-        uint256[] memory rootBalances,
-        Cryptocurrency[] memory cryptocurrencies,
-        uint256 timestamp // @audit : Future timestamp can be used. This can be used to manipulate 
-```        
- `timestamp` is expected to be time at which the exchange has taken snapshot of all the balances but this timestamp is not validated. As this can be set to a future timestamp. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes:
-- Creates inconsistencies/confusion by not maintaining a chronological order in the commitment. 
-- Delaying the proof verification by promising a future commitment. 
-To mitigate this add the following vallidation checks to `timestamp`
-- Add a check to make sure the `timestamp` is not in the future.
-- Store the last submitted timestamp and check the new timestamp is larger than the previous timestamp. 
-```diff
-+ uint256 public lastSubmitted;
-
-    function submitCommitment(
-        uint256 mstRoot,
-        uint256[] memory rootBalances,
-        Cryptocurrency[] memory cryptocurrencies,
-        uint256 timestamp
-    ) public onlyOwner {
-        require(mstRoot != 0, "Invalid MST root");
-+       require(timestamp < block.timestamp, "Cannot submit future commitment");
-+        require(timestamp > lastSubmitted, "Incorrect timestamp");
-        lastSubmitted = timestamp;
-        ....
-```
-
-**mstLevels and currenciesCount are fixed**:
-mstLevels and currenciesCount are currently set within the summa config inside the constructor. However this could limit flexibility if the number of accounts or currencies changes over time. Allow for dynamic resizing of `mstLevels` and `currenciesCount`. 
-While this may require commitment versioning so as to not impact the previous versions of commitments when the mstLevels or currencies change. 
-
-**No validation for mstLevels or currency length when adding commitments**:
-Commitment submissions do check if the `cryptocurrencies` length matches with the configured range of `currenciesCount` allowing for any potential manipulations with these. Although this may not have a significant impact since the user could verify the currencies, also not all the currencies may need to be included for a commitment but a there can be a sanity check 
-`require(cryptocurrencies.length <= currenciesCount, "Exceeds currency count");`
-Additional check can also be added to make sure the mst levels resulting out of the `rootBalances`/`currenciesCount` does not exceed the configured `mstLevels`.
- 
-
-
 
 ## Final remarks
 
