@@ -129,50 +129,6 @@ verifyProof(
 It does not return the bool value that `GrandSumVerifier.verifyProof` returns so the test just checks whether the function is not reverted. However, the function does not revert when I change the input `total_balances`.
 https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/test/Verifiers.ts#L96
 
-## POC
-Change `total_balances` to random values and then run `npx hardhat test`.
-https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/bin/commitment_solidity_calldata.json#L5-L6
-```json
-{
-  "range_check_snark_proof": "...",
-  "grand_sums_batch_proof": "...",
-  "total_balances": [
-    "0x1087f3e0000000000000",
-    "0x197f3000000000000000"
-  ]
-}
-```
-
-In `Verifier.ts`, `GrandSum Proof Verifier > should verify grand sum proof` test passes.
-https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/test/Verifiers.ts#L96
-
-## Fix
-1. add view modifier to `GrandSumVerifier.verifyProof`
-```diff
--    ) public returns (bool) {
-+    ) public view returns (bool) {
-```
-https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/GrandSumVerifier.sol#L32
-
-
-2.  Test the return value.
-```diff
--       expect(await grandSumVerifier.verifyProof(verifyingKey.address, proofs, totalBalances)).to.be.not.reverted;
-+       expect(await grandSumVerifier.verifyProof(verifyingKey.address, proofs, totalBalances)).to.be.true;
-```
-https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/test/Verifiers.ts#L96
-
-
-3. check success and revert before pairing as in `InclusionVerifier.sol`.
-```diff
-    success := ec_add_tmp(success, lhs_x, lhs_y)
-+   if iszero(success) {
-+       revert(0, 0)
-+   }
-```
-https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/GrandSumVerifier.sol#L143-L144
-
-
 ### 1. Low: [Dynamic Errors not handled in Box of Errors for Function Results](https://github.com/zBlock-2/summa-solvency/issues/8)
 By: **sachindkagrawal15**
 
