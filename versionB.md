@@ -105,8 +105,7 @@ We managed to generate fake inclusion proof of a non-existing user, the user id 
 ### 4. High: [Same username overflow as reported in version A](https://github.com/zBlock-2/summa-solvency/issues/2)
 By: **bbresearcher**
 
-**Describe the bug**
-Just to surface that the same issue as on V_A still exists: https://github.com/zBlock-2/audit-report/blob/parsely-edits/versionA.md#1-high-possible-overflow-in-username-in-big_intify_username-combined-with-calling-big_uint_to_fp-and-guarantee-usernames-stays-inside-field
+The same issue as on V_A still exists: https://github.com/zBlock-2/audit-report/blob/parsely-edits/versionA.md#1-high-possible-overflow-in-username-in-big_intify_username-combined-with-calling-big_uint_to_fp-and-guarantee-usernames-stays-inside-field
 
 
 
