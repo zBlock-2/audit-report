@@ -24,6 +24,17 @@ Auditors:
 
 
 ## Table of Contents
+- [Protocol Summary](#protocol-summary)
+- [Protocol Goals](#protocol-goals)
+- [Scope](#scope)
+- [Code Evaluation Matrix](#code-evaluation-matrix)
+- [Automated testing](#automated-testing)
+- [Findings Explanation](#findings-explanation)
+- [Findings](#findings)
+- [Final remarks](#final-remarks)
+- [Recommendations](#recommendations)
+- [Tool Configuration](#tool-configuration)
+- [Appendix](#appendix)
 ## Protocol Summary
 ## Protocol Goals
 ## Scope
@@ -61,7 +72,7 @@ Findings are broken down into sections by their respective Impact:
 ## Findings
 
 
-### High: [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) and [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13)
+### 1. High: [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) and [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13)
 By: **sebastiantf, bbresearcher**
 
 **NB Need to give credit to Jin.s for the guidance to find the bug**
@@ -117,7 +128,7 @@ The two user values are equal
 Usernames should be unique all the time
 
 
-### High: [Sum balance overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10)
+### 2. High: [Sum balance overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10)
 By: **zeroqn**
 
 **Describe the bug**
@@ -150,7 +161,7 @@ https://github.com/privacy-scaling-explorations/halo2/issues/194
 https://github.com/DoHoonKim8/halo2-lasso/pull/4
 
 
-### High: [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14)
+### 3. High: [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14)
 By: **Y5Yash**
 
 **Background**
@@ -169,7 +180,7 @@ Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contra
 
 
 
-### Low: [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17)
+### 1. Low: [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17)
 By: **bbresearcher**
 
 **Describe the bug**
@@ -181,13 +192,13 @@ The same endianness should be used throughout
 
 
 
-### Informational: [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18)
+### 1. Informational: [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18)
 By: **obatirou**
 
 The range check uses function `lookup_any` which was introduced in PSE fork to allow dynamic lookup by using a table expression. The table used for the range check do not change and is always the same: values from `0 to 2^8-1.` Hence a dynamic lookup is not necessary in this context. Usage of `lookup` should be preferred.
 
 
-### Informational: [`InclusionVerifier.yul`not generated](https://github.com/zBlock-2/summa-solvency-schneier/issues/16)
+### 2. Informational: [`InclusionVerifier.yul`not generated](https://github.com/zBlock-2/summa-solvency-schneier/issues/16)
 By: **flyingnobita**
 
 **Describe the bug**
@@ -208,7 +219,7 @@ Steps to reproduce the behavior:
 This is related to the `halo2_solidity_verifier` being used for generating the smart contracts.
 
 
-### Informational: [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12)
+### 3. Informational: [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12)
 By: **sebastiantf**
 
 # Description
@@ -220,7 +231,7 @@ Since they are not homogenous or not values that have the same meaning, it might
 <img width="737" alt="Screenshot 2024-02-27 at 12 22 25 PM" src="https://github.com/zBlock-2/summa-solvency-schneier/assets/36922376/45941ac9-605c-4e4f-806f-1476eacf18ac">
 
 
-### Informational: [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11)
+### 4. Informational: [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11)
 By: **sebastiantf**
 
 # Description
@@ -231,7 +242,7 @@ Didn't really notice any specific use-case being served by the array.
 
 If there isn't really any use of the array, then I suppose we could remove the array, modify the mapping to store the `AddressOwnershipProof` struct and only use that. This is probably going to be a lot more efficient and simpler
 
-### Informational: [`Summa.sol` : Issue with `submitProofOfAddressOwnership()`](https://github.com/zBlock-2/summa-solvency-schneier/issues/7)
+### 5. Informational: [`Summa.sol` : Issue with `submitProofOfAddressOwnership()`](https://github.com/zBlock-2/summa-solvency-schneier/issues/7)
 By: **zzzuhaibmohd**
 
 **Describe the bug**
@@ -274,7 +285,7 @@ Make the following changes in the `addressHash` generation to generate a more un
 Add any other context about the problem here.
 
 
-### Informational: [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6)
+### 6. Informational: [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6)
 By: **zzzuhaibmohd**
 
 **Describe the bug**
@@ -295,7 +306,7 @@ The way it works is there is a `transferOwnership` to transfer the ownership and
 Add any other context about the problem here.
 
 
-### Informational: [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4)
+### 7. Informational: [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4)
 By: **sebastiantf**
 
 # Description
@@ -319,7 +330,7 @@ It shouldn't be too hard to add a test that tests such limits and it is WIP. But
 
 This would warrant if the circuit implementation supports this kind of split submission. Afaik, a single commitment is for the entire state of the exchange at a given time. If I'm wrong, please correct me, and feel free to close this issue.
 
-### Informational: [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15)
+### 8. Informational: [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15)
 By: **bbresearcher**
 
 **Describe the bug**
@@ -332,7 +343,7 @@ Either create named constants or document the values used in a comment
 https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/circuits/merkle_sum_tree.rs#L237-L245
 
 
-### Informational: [Review of the `Summa.sol` smart contract.](https://github.com/zBlock-2/summa-solvency-diffie/issues/12)
+### 9. Informational: [Review of the `Summa.sol` smart contract.](https://github.com/zBlock-2/summa-solvency-diffie/issues/12)
 By: **hrishibhat**
 
 The Summa contract allows for centralized exchanges to prove to their users of the inclusion of their balances in the Merke Sum Tree. 
