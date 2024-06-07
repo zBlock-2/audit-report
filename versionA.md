@@ -60,7 +60,7 @@ The core object in this version of the protocol is a Merkle sum tree (MST). Node
 
 ![mst in summa version a](./assets/mst.png?raw=true)
 
-Merkle sum tree in [Summa Version A](https://summa.gitbook.io/summa/v/1/cryptographic-primitives/merkle-sum-tree)
+Figure 1: Merkle sum tree in [Summa Version A](https://summa.gitbook.io/summa/v/1/cryptographic-primitives/merkle-sum-tree)
 
 User IDs are hashed in leaf nodes, and the root node (like all other inner nodes) contains only a hash an array of balances. These two elements are the public input to the verifier of the proof of grand sums, and as such no private user data are leaked. Merkle roots provided to users to feed as public input to the verifier of their inclusion proofs also do not leak any private data of other users for the same reason -blinding by hashing.
 
