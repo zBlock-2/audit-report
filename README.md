@@ -9,7 +9,7 @@ A collective of fellows and yAcademy ZK Resident auditors engaged with the Summa
 There is a [dedicated page](https://yacademy.dev) containing all outputs from this fellowship: reports, tooling, sessions, and highlights. Should you be an aspiring ZK auditor and want to simulate going through the fellowship, you can post any questions or difficulties you encounter in the public channels dedicated to [zero-knowledge discussions](https://discord.com/channels/877252171983360072/1106224054358261820) and our residents, alumni fellows, and the community at large can provide help. You can also [apply](https://yacademy.dev/fellowships) to be considered for future fellowships.
 
 
-### Overview of the Summa Proof of Solvency Protocol
+## Overview of the Summa Proof of Solvency Protocol
 
 Blockchain technology can facilitate uncensorable and self-soverign control of one’s assets. Users nonetheless regularly transfer ownership of their assets to centralized entities for various needs, chief among which is trading of cryptocurrencies and the on/off-ramping of fiat. Such centralized entities may themselves and in turn transfer ownership to secondary specialized custodian entities or other service providers such as investment funds. Unfortunately, such centralized control and handling of user funds can lead to catastrophic situations such as the mishandling of private keys which may lead to internal or external hacks, or the outright misuse of funds for trading or for use as collateral to access capital -which can result in liquidations in extreme market conditions.
 
