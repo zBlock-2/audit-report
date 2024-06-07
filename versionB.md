@@ -26,8 +26,25 @@ Auditors:
 - [Scope](#scope)
 - [Automated testing](#automated-testing)
 - [Fuzz testing](#fuzz-testing)
-- [Findings Explanation](#findings-explanation)
 - [Findings](#findings)
+  - [High](#high):
+    - The inclusion proof reveals whether a user holds a specific token
+    - Wrong verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`
+    - Fake user Inclusion Proof verified in contract
+    - Username overflow
+  - [Medium](#medium):
+    - The return value of `GrandSumVerifier` should be tested
+  - [Low](#low):
+    - Incorrect permutation length in `validateVKPermuationsLength`
+    - CSV parsing allows duplicate crypto tokens
+    - The return value of `GrandSumVerifier` should be tested
+    - Range check tests are unreliable regarding the number of overflows
+  - [Informational](#informational):
+    - Security concerns in `Summa.sol`
+    - Update memory locations in verifiers to save gas
+    - Dynamic Errors not handled in Box of Errors for Function Results
+    - Use of unwrap in core files and improper error handling
+    - Automated tests for dependency vulnerabilities and code quality
 - [Final remarks](#final-remarks)
 - [Recommendations](#recommendations)
 - [Tool Configuration](#tool-configuration)
@@ -67,6 +84,7 @@ Findings are broken down into sections by their respective Impact:
 
 ## Findings
 
+### High
 
 ### 1. High: [The inclusion proof reveals whether a user holds a specific token](https://github.com/zBlock-2/summa-solvency/issues/21)
 By: **qpzm**
@@ -83,7 +101,7 @@ A sniffer, for example, may be an web3 api endpoint who can see a user's inputs 
 3. $[Q_B(w^i)]_1$ is given by the verifier as an input for `verifyInclusionProof`.
 4. The index of a user $i$ can be known by a rainbow table trick. It calculates $[s]_{2}- [w^i]_2$ for every i and compare with the challenge input given in `verifyInclusionProof`.
 
-### 2. High: [Wrong verifying key contract permutation length can be considered valid by validateVKPermutationsLength](https://github.com/zBlock-2/summa-solvency/issues/10)
+### 2. High: [Wrong verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`](https://github.com/zBlock-2/summa-solvency/issues/10)
 By: **obatirou**
 
 The function `validateVKPermutationsLength` is used to validate the number of permutations in the verifying key contract corresponds to the circuit used to generate proof for the number of cryptocurrencies the custodian committed to. The Summa contract assumes that permutations commitments begins at bytes `0x2e0` in the `vKContract` ([source](https://github.com/zBlock-2/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L151))
@@ -95,12 +113,14 @@ By: **rkdud007**, **qpzm**
 
 We managed to generate fake inclusion proof of a non-existing user, the user id is out of the bounds of the original CSV file. As all the balance cells’ values are zero, it might not be a critical issue in the CEX use case of proof of liability, but this becomes critical issue when Summa’s core logic is utilized in more [general application use cases](https://eprint.iacr.org/2021/1350.pdf) that inclusion itself plays an important role.
 
-### 4. High: [Same username overflow as reported in version A](https://github.com/zBlock-2/summa-solvency/issues/2)
+### 4. High: [Username overflow](https://github.com/zBlock-2/summa-solvency/issues/2)
 By: **bbresearcher**
 
 The same issue as on Version A of Summa still exists in Version B: https://github.com/zBlock-2/audit-report/blob/parsely-edits/versionA.md#1-high-possible-overflow-in-username-in-big_intify_username-combined-with-calling-big_uint_to_fp-and-guarantee-usernames-stays-inside-field
 
-### 1. Medium: [The return value of `GrandSumVerifier` should be tested.](https://github.com/zBlock-2/summa-solvency/issues/4)
+### Medium
+
+### 1. Medium: [The return value of `GrandSumVerifier` should be tested](https://github.com/zBlock-2/summa-solvency/issues/4)
 By: **qpzm**
 
 `GrandSumVerifier.verifyProof` is not a view function.
@@ -119,8 +139,9 @@ verifyProof(
 It does not return the bool value that `GrandSumVerifier.verifyProof` returns so the test just checks whether the function is not reverted. However, the function does not revert when I change the input `total_balances`.
 https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/test/Verifiers.ts#L96
 
+### Low
 
-### 1. Low: [Incorrect permutation length in validateVKPermuationsLength](https://github.com/zBlock-2/summa-solvency/issues/6)
+### 1. Low: [Incorrect permutation length in `validateVKPermuationsLength`](https://github.com/zBlock-2/summa-solvency/issues/6)
 By: **zeroqn**
 
 The error arises from the range check lookup table. For instance, when the `balanceByteRange` is set to 9, we expect to have four 2^16 lookup tables plus an additional 2^8 or 2^16 lookup table. `balanceByteRange / 2` return 4, which is wrong.
@@ -130,7 +151,7 @@ The error arises from the range check lookup table. For instance, when the `bala
 
 **Expected behavior**: test should fail
 
-### 2. Low: [CSV parsing allows duplicate crypto tokens.](https://github.com/zBlock-2/summa-solvency/issues/5)
+### 2. Low: [CSV parsing allows duplicate crypto tokens](https://github.com/zBlock-2/summa-solvency/issues/5)
 By: **bbresearcher**
 
 The CSV parsing function and code allows for the CSD import to contain duplicate crypto tokens.
@@ -155,7 +176,7 @@ running the command `cargo run --release --example summa_solvency_flow` still ge
 
 **Expected behavior**: crypto token columns should be unique
 
-### 3. Low: [The return value of `GrandSumVerifier` should be tested.](https://github.com/zBlock-2/summa-solvency/issues/4)
+### 3. Low: [The return value of `GrandSumVerifier` should be tested](https://github.com/zBlock-2/summa-solvency/issues/4)
 By: **qpzm**
 
 `GrandSumVerifier.verifyProof` is not a view function.
@@ -175,7 +196,7 @@ It does not return the bool value that `GrandSumVerifier.verifyProof` returns so
 https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/test/Verifiers.ts#L96
 
 
-### 4. Low: [Range check tests are unreliable regarding the number of overflows.](https://github.com/zBlock-2/summa-solvency/issues/3)
+### 4. Low: [Range check tests are unreliable regarding the number of overflows](https://github.com/zBlock-2/summa-solvency/issues/3)
 By: **qpzm**, **pia**
 
 This test data has two entries which exceed 2^64 -1:
@@ -187,6 +208,7 @@ https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43
 The test result, however, shows 4 balances break the range check. For example, user2 balance0 is zero, but the test error contains "Perform range check on balance 0 of user 2".
 https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/src/circuits/tests.rs#L453-L484
 
+### Informational
 
 ### 1. Informational: [Security concerns in `Summa.sol`](https://github.com/zBlock-2/summa-solvency/issues/23)
 By: **hrishibhat**

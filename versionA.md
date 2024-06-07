@@ -93,7 +93,7 @@ Findings are broken down into sections by their respective Impact:
 
 ### High
 
-#### 1. High: [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) and [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13)
+### 1. High: [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) and [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13)
 By: **sebastiantf, bbresearcher**, credit to **[Jin](https://github.com/sifnoc)** for guidance
 
 
@@ -101,7 +101,7 @@ By: **sebastiantf, bbresearcher**, credit to **[Jin](https://github.com/sifnoc)*
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
 
-#### 2. High: [Sum balance overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10)
+### 2. High: [Sum balance overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10)
 By: **zeroqn**
 
 
@@ -110,7 +110,7 @@ There is no range check in the circuit for the sum of balances, which poses a ri
 
 Furthermore, since N_BYTES is not exposed in the contract, users must run `examples/gen_inclusion_verifier.rs` to obtain a warning message about the risk of overflow.
 
-#### 3. High: [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14)
+### 3. High: [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14)
 By: **Y5Yash**
 
 **Background**: The circuit checks for all levels in the tree if the sibling node's balance (and two leaf balances) is less than `m = 2 ** (NBYTES * 8)`. In the first look, this suggests that the max balance for the immediate parent of the leaf nodes at level 1 would be `2 * m` and the parent at level 2 would be `3 * m`, ..., and the max balance at the root will be `(NLEVEL - 1) * m`.
@@ -119,7 +119,7 @@ By: **Y5Yash**
 
 ### Low
 
-#### 1. Low: [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17)
+### 1. Low: [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17)
 By: **bbresearcher**
 
 In the code here https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/utils/operation_helpers.rs#L5-L17 ,
