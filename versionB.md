@@ -61,7 +61,7 @@ A Lagrange basis polynomial is interpolated such that at `x=0` it evaluates to t
 
 The prover produces a commitment `C` to the polynomial and:
 
-- An opening [proof](https://github.com/summa-dev/summa-solvency/blob/bd3a3d4d8fda6661e4eede00cf6176d66cb00858/prover/src/circuits/tests.rs#L167) at `x=0` to the public
+- An opening [proof](https://github.com/summa-dev/summa-solvency/blob/bd3a3d4d8fda6661e4eede00cf6176d66cb00858/prover/src/circuits/tests.rs#L167) at `x=0` to [the public](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230)
 - An opening proof at `(w_j)^i`  for the `i-th` user, who can can verify inclusion not only that the evaluation is correct but also that the commitment `C` they evaluated against is the same as the public commitment.
 
 ## Methodology
