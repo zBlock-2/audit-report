@@ -26,6 +26,7 @@ Auditors:
 ## Table of Contents
 - [Protocol Summary](#protocol-summary)
 - [Methodology](#methodology)
+- [Automated Testing](#automated-testing)
 - [Scope](#scope)
 - [Findings](#findings)
   - [High](#high):
@@ -44,10 +45,8 @@ Auditors:
     - Potential `Summa::submitCommitment()` Gas limits
     - Magic numbers used in code of MST Circuit to create PoseidonChip
     - Review of the `Summa.sol` smart contract
-- [Automated testing](#automated-testing)
 - [Final remarks](#final-remarks)
 - [Recommendations](#recommendations)
-- [Tool Configuration](#tool-configuration)
 - [Appendix](#appendix)
 
 ## Protocol Summary
@@ -73,13 +72,35 @@ What is proven in-circuit by the entity are:
 Each balance is range-checked in-circuit to a ceiling such that summing N users cannot possibly exceed the prime, with N being a safe maximum. The larger the ceiling the higher the prover cost (due to more decompositions during range-check). In summa, balances are range-checked to be ≤ 64 bits which are large enough for typical cryptocurrency balances while small enough to guarantee the summation of billions of users `N` cannot possibly overflow the much larger prime.
 
 ## Methodology
+## Automated Testing
+
+We use automated techniques to extensively test the security properties of software. We use both open-source static analysis and fuzzing utilities, along with tools developed in house, to perform automated testing of source code.
+
+### Automated Analysis
+We used the following tools in the automated testing phase of this project:
+
+| Tool | Description | Section |
+|----------|----------|----------|
+| Halo2-analyzer    | Halo2-analyzer / Korrekt employs a Satisfiability Modulo Theories (SMT) solver to try to find multiple satisfying models (i.e., private inputs) for a circuit and a (fixed) public input in order to determine if it is under-constrained. | Appendix A.1 |
+| Polyexen-demo    | Polyexen (Polynomial Expression Engine) transforms circuits designed with the Halo2 API into the Plonkish Arithmetization Format (Plaf). Plaf is designed to standardize plonkish circuits for reuse in components compatible with plonkish arithmetization. | Appendix A.2 |
+| npm-audit   | `npm audit` scans your project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Node.js application secure by identifying and addressing potential risks in your packages. | Appendix A.3 |
+| cargo-audit | `cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates. | Appendix A.4 |
+| Clippy | `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using clippy helps ensure your Rust code is clean, efficient, and follows best practices. | Appendix A.5 |
+
+### Fuzz Testing
+
+Fuzzing is a testing technique that tries to find bugs by repeatedly executing test cases and
+mutating them. Classically, it is used in C/C++ codebases to detect segmentation faults,
+buffer overflows, and other memory corruption vulnerabilities. In Rust, we can use it to find
+runtime errors.
+
+We set up a fuzz test suite using `cargo fuzz` for Merkle Sum Tree implementation, Range check & it’s utilities. Appendix B contains a detailed description of the setup and deployment details.
+
+### Code Coverage
+
+We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage. Refer to Appendix C for more detailed information on testing & code coverage.
+
 ## Scope
-## Automated testing
-## - halo2-analyzer
-## - polyexen
-## - Rust Tools (clippy etc)
-## Fuzz Testing
-## Halo2 table image
 ## Findings Explanation
 
 Findings are broken down into sections by their respective Impact:
@@ -222,13 +243,23 @@ Once the commitment is submitted the user can then verify using the `verifyInclu
 ## Final remarks
 
 ## Recommendations
-## Tool Configuration
-## Appendix
-### [Range check fuzzing](https://github.com/zBlock-2/summa-solvency-Turing/issues/15)
-By: **teddav**
-### [Installing and running halo2-analyzer](https://github.com/zBlock-2/summa-solvency-Turing/issues/12)
-By: **teddav**
-### Automated tests for dependency vulnerabilities and code quality [1](https://github.com/zBlock-2/summa-solvency-Turing/issues/11) [2](https://github.com/zBlock-2/summa-solvency-Turing/issues/10) [3](https://github.com/zBlock-2/summa-solvency-Turing/issues/9) [4](https://github.com/zBlock-2/summa-solvency-Turing/issues/8) [5](https://github.com/zBlock-2/summa-solvency-Turing/issues/7)
-By: **sachindkagrawal15**
-### [Set up the Fuzz testing suite in summa](https://github.com/zBlock-2/summa-solvency-Turing/issues/2)
-By: **0xpanicError**
+
+## Appendix 
+
+### B - Fuzz Testing
+
+- Balance Sanitization :
+  - 
+
+
+### C - Code Coverage
+
+![alt text](./assets/image.png)
+
+We raised the following pull requests to increase code coverage & emphasize on testing.
+
+- [PR#3](https://github.com/zBlock-2/summa-solvency-diffie/pull/3) to increase code coverage for `merkle_sum_tree`
+- [PR#17](https://github.com/zBlock-2/summa-solvency-schneier/pull/17) to add end-to-end testing with full prover and verifier (instead of mock prover).
+- [PR#8](https://github.com/zBlock-2/summa-solvency-schneier/pull/8/files) to include cost estimation for circuits using `CircuitCost`
+- [PR#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5) is a stress test to determine the potential gas limits of `Summa::submitCommitment()`
+
