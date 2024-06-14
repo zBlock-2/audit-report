@@ -1,0 +1,49 @@
+[info]
+num_rows = 131072
+p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+
+[info.challenges]
+
+[columns.public]
+i00 = { aliases = [] }
+
+[columns.fixed]
+f00 = { aliases = ["LOOKUP_MAXBITS_RANGE"] }
+
+[columns.witness]
+w00 = { phase = 0, aliases = [] }
+w01 = { phase = 0, aliases = [] }
+w02 = { phase = 0, aliases = [] }
+w03 = { phase = 0, aliases = [] }
+w04 = { phase = 0, aliases = [] }
+w05 = { phase = 0, aliases = [] }
+
+
+[constraints.lookups."range check in u16 for difference between the element to be checked and the 0-th truncated right-shifted value of the element"]
+l = [
+  ["w01 - w02*2^16",
+   "LOOKUP_MAXBITS_RANGE"],
+]
+[constraints.lookups."range check in u16 for difference between the 0-th truncated right-shifted value and the 1-th truncated right-shifted value"]
+l = [
+  ["w02 - w03*2^16",
+   "LOOKUP_MAXBITS_RANGE"],
+]
+[constraints.lookups."range check in u16 for difference between the 1-th truncated right-shifted value and the 2-th truncated right-shifted value"]
+l = [
+  ["w03 - w04*2^16",
+   "LOOKUP_MAXBITS_RANGE"],
+]
+[constraints.lookups."range check in u16 for difference between the 2-th truncated right-shifted value and the 3-th truncated right-shifted value"]
+l = [
+  ["w04 - w05*2^16",
+   "LOOKUP_MAXBITS_RANGE"],
+]
+
+
+[[constraints.copys]]
+columns = ["w05", "i00"]
+offsets = [
+ [0, 0],
+ [1, 0],
+]

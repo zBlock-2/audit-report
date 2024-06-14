@@ -1,0 +1,2 @@
+[constraints.resolved_lookups.lookups]
+"0_range u8 check for difference between each interstitial running sum output" = ["f02[1274] - 2^8*f02[1274]"]

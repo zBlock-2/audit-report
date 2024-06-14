@@ -1,0 +1,5 @@
+[constraints.resolved_lookups.lookups]
+"1_range check in u16 for difference between the 0-th truncated right-shifted value and the 1-th truncated right-shifted value" = ["w02[131071] - 2^16*w03[131071]"]
+"3_range check in u16 for difference between the 2-th truncated right-shifted value and the 3-th truncated right-shifted value" = ["w04[131071] - 2^16*w05[131071]"]
+"0_range check in u16 for difference between the element to be checked and the 0-th truncated right-shifted value of the element" = ["w01[131071] - 2^16*w02[131071]"]
+"2_range check in u16 for difference between the 1-th truncated right-shifted value and the 2-th truncated right-shifted value" = ["w03[131071] - 2^16*w04[131071]"]
