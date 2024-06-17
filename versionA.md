@@ -26,14 +26,13 @@ Auditors:
 ## Table of Contents
 
 - [Protocol Summary](#protocol-summary)
-- [Methodology](#methodology)
-- [Automated Testing](#automated-testing)
 - [Scope](#scope)
+- [Automated Testing](#automated-testing)
 - [Findings](#findings)
   - [High](#high):
-    - Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp
-    - Sum balance overflow
-    - Inconsistency in range checks
+    - [1. Missing username range check in `big_intify_username` & `big_uint_to_fp`](#1-high-missing-username-range-check-in-big_intify_username--big_uint_to_fp)
+    - [2. Sum balance overflow](#2-high-sum-balance-overflow)
+    - [3. Inconsistency in range checks](#3-high-inconsistency-in-range-checks)
   - [Low](#low)
     - Mixed endian usage in code
   - [Informational](#informational)
@@ -47,8 +46,11 @@ Auditors:
     - Magic numbers used in code of MST Circuit to create PoseidonChip
     - Review of the `Summa.sol` smart contract
 - [Final remarks](#final-remarks)
-- [Recommendations](#recommendations)
 - [Appendix](#appendix)
+  - [Automated Analysis](#a---automated-analysis)
+  - [Fuzz Testing](#b---fuzz-testing)
+  - [Code Coverage](#c---code-coverage)
+  - [Methodology]()
 
 ## Protocol Summary
 
@@ -71,8 +73,6 @@ What is proven in-circuit by the entity are:
 - The hash function is computed correctly
 
 Each balance is range-checked in-circuit to a ceiling such that summing N users cannot possibly exceed the prime, with N being a safe maximum. The larger the ceiling the higher the prover cost (due to more decompositions during range-check). In summa, balances are range-checked to be ≤ 64 bits which are large enough for typical cryptocurrency balances while small enough to guarantee the summation of billions of users `N` cannot possibly overflow the much larger prime.
-
-## Methodology
 
 ## Automated Testing
 
@@ -105,7 +105,17 @@ We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate 
 
 ## Scope
 
+The security review was limited to commit [95d63fe](https://github.com/summa-dev/summa-solvency/tree/95d63fe1a55935542810138aa5d8de7f50f4e94b). The scope of the review consisted of the following files and folders at the specific commit:
 
+- `/zk_prover/*`
+- `/contracts/src/Summa.sol`
+- `/backend/*`
+
+After the findings were presented to the Summa team, fixes were made and included in several PRs.
+
+This code review is for identifying potential vulnerabilities in the code. The reviewers did not investigate security practices or operational security and assumed that privileged parties could be trusted. The reviewers did not evaluate the security of the code relative to a standard or specification. The review may not have identified all potential attack vectors or areas of vulnerability.
+
+yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent nor imply to third parties that the code has been audited nor that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
 
 ## Findings Explanation
 
@@ -122,27 +132,47 @@ Findings are broken down into sections by their respective Impact:
 
 ### High
 
-### 1. High: [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) and [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13)
+### 1. High: Missing username range check in `big_intify_username` & `big_uint_to_fp`
 
-By: **sebastiantf, bbresearcher**, credit to **[Jin](https://github.com/sifnoc)** for guidance
-
+```rust
+/// Return a BigUint representation of the username
+pub fn big_intify_username(username: &str) -> BigUint {
+    let utf8_bytes = username.as_bytes();
+    BigUint::from_bytes_be(utf8_bytes)
+}
+/// Converts a BigUint to a Field Element
+pub fn big_uint_to_fp(big_uint: &BigUint) -> Fp {
+    Fp::from_str_vartime(&big_uint.to_str_radix(10)[..]).unwrap()
+}
+```
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
-### 2. High: [Sum balance overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10)
+#### Recommendation
 
-By: **zeroqn**
+Include a range check inside the circuit or inside the smart contract. The range checks are to ensure that all usernames were less than the snark scalar field order so two users don't end up with the same identity in the Merkle sum tree
+
+#### Refer
+- [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf]()
+- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [parsley]()
+
+### 2. High: Sum balance overflow
 
 There is no range check in the circuit for the sum of balances, which poses a risk of overflow.
 
 Furthermore, since N_BYTES is not exposed in the contract, users must run `examples/gen_inclusion_verifier.rs` to obtain a warning message about the risk of overflow.
 
-### 3. High: [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14)
+#### Refer
+- [Sum Balance Overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10) by [zeroqn]()
 
-By: **Y5Yash**
+### 3. High: Inconsistency in range checks
 
-**Background**: The circuit checks for all levels in the tree if the sibling node's balance (and two leaf balances) is less than `m = 2 ** (NBYTES * 8)`. In the first look, this suggests that the max balance for the immediate parent of the leaf nodes at level 1 would be `2 * m` and the parent at level 2 would be `3 * m`, ..., and the max balance at the root will be `(NLEVEL - 1) * m`.
+The circuit checks for all levels in the tree if the sibling node's balance (and two leaf balances) is less than `m = 2 ** (NBYTES * 8)`. In the first look, this suggests that the max balance for the immediate parent of the leaf nodes at level 1 would be `2 * m` and the parent at level 2 would be `3 * m`, ..., and the max balance at the root will be `(NLEVEL - 1) * m`.
 
-**Expected behavior**: Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contracts.
+Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contracts.
+
+#### Refer
+
+- [](https://github.com/zBlock-2/summa-solvency-Turing/issues/14) by [y5yash]()
 
 ### Low
 

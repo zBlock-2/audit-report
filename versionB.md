@@ -24,7 +24,6 @@ Auditors:
 ## Table of Contents
 
 - [Protocol Summary](#protocol-summary)
-- [Methodology](#methodology)
 - [Scope](#scope)
 - [Automated testing](#automated-testing)
 - [Findings](#findings)
@@ -48,6 +47,8 @@ Auditors:
     - Automated tests for dependency vulnerabilities and code quality
 - [Final remarks](#final-remarks)
 - [Appendix](#appendix)
+  - [Automated Analysis](#a---automated-analysis)
+  - [Methodology]()
 
 ## Protocol Summary
 
@@ -67,6 +68,19 @@ The prover produces a commitment `C` to the polynomial and:
 ## Methodology
 
 ## Scope
+
+The security review was limited to commit [fec83a747](https://github.com/summa-dev/summa-solvency/tree/95d63fe1a55935542810138aa5d8de7f50f4e94b). The scope of the review consisted of the following files and folders at the specific commit:
+
+- `/backend/*`
+- `/contracts/*`
+- `/csv/*`
+- `/prover/*` excluding [amortized KZG opening approach](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/src/circuits/tests.rs#L31) and  related code in [utils](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/src/circuits/utils.rs#L236-L307)
+
+After the findings were presented to the Summa team, fixes were made and included in several PRs.
+
+This code review is for identifying potential vulnerabilities in the code. The reviewers did not investigate security practices or operational security and assumed that privileged parties could be trusted. The reviewers did not evaluate the security of the code relative to a standard or specification. The review may not have identified all potential attack vectors or areas of vulnerability.
+
+yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent nor imply to third parties that the code has been audited nor that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
 
 ## Automated testing
 
@@ -270,7 +284,7 @@ By: **sachindkagrawal15**
 
 ## Appendix
 
-### Automated Analysis
+### A - Automated Analysis
 
 #### 1. Halo2-analyzer
 
