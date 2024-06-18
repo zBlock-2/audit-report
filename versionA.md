@@ -34,17 +34,17 @@ Auditors:
     - [2. Sum balance overflow](#2-high-sum-balance-overflow)
     - [3. Inconsistency in range checks](#3-high-inconsistency-in-range-checks)
   - [Low](#low)
-    - Mixed endian usage in code
+    - [1. Mixed endian usage in code](#1-low-mixed-endian-usage-in-code)
   - [Informational](#informational)
-    - Range check uses lookup_any instead of lookup
-    - `InclusionVerifier.yul`not generated
-    - Improvement to public inputs in contract
-    - Use only mapping for `addressOwnershipProofs`
-    - `Summa.sol` : Issue with `submitProofOfAddressOwnership()`
-    - `Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership
-    - Potential `Summa::submitCommitment()` Gas limits
-    - Magic numbers used in code of MST Circuit to create PoseidonChip
-    - Review of the `Summa.sol` smart contract
+    - [1. Range check uses lookup_any instead of lookup](#1-informational-range-check-uses-lookup_any-instead-of-lookup)
+    - [2. `InclusionVerifier.yul`not generated](#2-informational-inclusionverifieryulnot-generated)
+    - [3. Improvement to public inputs in contract](#3-informational-improvement-to-public-inputs-in-contract)
+    - [4. Use only mapping for `addressOwnershipProofs`](#4-informational-use-only-mapping-for-addressownershipproofs)
+    - [5. `Summa.sol` : Issue with `submitProofOfAddressOwnership()`](#5-informational-summasol--issue-with-submitproofofaddressownership)
+    - [6. `Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](#6-informational-summasol--ownable-does-not-implement-2-step-process-for-transferring-ownership)
+    - [7. Potential `Summa::submitCommitment()` Gas limits](#7-informational-potential-summasubmitcommitment-gas-limits)
+    - [8. Magic numbers used in code of MST Circuit to create PoseidonChip](#8-informational-magic-numbers-used-in-code-of-mst-circuit-to-create-poseidonchip)
+    - [9. Review of the `Summa.sol` smart contract](#9-informational-review-of-the-summasol-smart-contract)
 - [Final remarks](#final-remarks)
 - [Appendix](#appendix)
   - [Automated Analysis](#a---automated-analysis)
@@ -157,9 +157,7 @@ Include a range check inside the circuit or inside the smart contract. The range
 
 ### 2. High: Sum balance overflow
 
-There is no range check in the circuit for the sum of balances, which poses a risk of overflow.
-
-Furthermore, since N_BYTES is not exposed in the contract, users must run `examples/gen_inclusion_verifier.rs` to obtain a warning message about the risk of overflow.
+There is no in-circuit range check for the sum of balances, which poses a risk of overflow. Since `N_BYTES` is not exposed in the contract, users must run `examples/gen_inclusion_verifier.rs` to obtain a warning message about the risk of overflow.
 
 #### Refer
 - [Sum Balance Overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10) by [zeroqn]()
@@ -172,55 +170,60 @@ Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contra
 
 #### Refer
 
-- [](https://github.com/zBlock-2/summa-solvency-Turing/issues/14) by [y5yash]()
+- [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14) by [y5yash]()
 
 ### Low
 
-### 1. Low: [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17)
+### 1. Low: Mixed endian usage in code
 
-By: **bbresearcher**
+In the code [here](https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/utils/operation_helpers.rs#L5-L17), `big_intify_username` uses big-endian and `fp_to_big_uint` uses little-endian.
 
-In the code here https://github.com/summa-dev/summa-solvency/blob/master/zk_prover/src/merkle_sum_tree/utils/operation_helpers.rs#L5-L17 ,
-In specific big_intify_username uses big-endian and fp_to_big_uint uses little-endian.
+#### Refer
+
+- [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17) by [bbresearcher]()
 
 ### Informational
 
-### 1. Informational: [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18)
-
-By: **obatirou**
+### 1. Informational: Range check uses lookup_any instead of lookup
 
 The range check uses function `lookup_any` which was introduced in PSE fork to allow dynamic lookup by using a table expression. The table used for the range check do not change and is always the same: values from `0 to 2^8-1.` Hence a dynamic lookup is not necessary in this context. Usage of `lookup` should be preferred.
 
-### 2. Informational: [`InclusionVerifier.yul`not generated](https://github.com/zBlock-2/summa-solvency-schneier/issues/16)
+#### Refer
 
-By: **flyingnobita**
+- [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18) By  [obatirou]()
+
+### 2. Informational: `InclusionVerifier.yul`not generated
 
 It is mentioned in the Summa Book on the [summa-solvency page](https://summa.gitbook.io/summa-book/backend/summa-solvency) that `InclusionVerifier.sol` and `InclusionVerifier.yul` will be generated by the `gen_inclusion_verifier.rs` script. However, only `InclusionVerifier.sol` is generated.
 
 > The script will generate a new `InclusionVerifier.sol` and `InclusionVerifier.yul` contracts in [`contracts/src`](https://github.com/summa-dev/summa-solvency/tree/master/contracts/src).
 
-### 3. Informational: [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12)
+#### Refer 
 
-By: **sebastiantf**
+- [`InclusionVerifier.yul`not generated](https://github.com/zBlock-2/summa-solvency-schneier/issues/16) by [flyingnobita]()
+
+### 3. Informational: Improvement to public inputs in contract
 
 The [`publicInputs`](https://github.com/zBlock-2/summa-solvency-schneier/blob/main/contracts/src/Summa.sol#L193) input to the contract is taken as an array. But its not a homogenous array. The expected [public inputs](https://summa.gitbook.io/summa-book/circuits/merkle-sum-tree-inclusion#public-inputs-outputs) are: user leaf hash, MST root followed by root balances:
 https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L188-L197
 
 Since they are not homogenous or not values that have the same meaning, it might be better DX/UX to have them as separate meaningful inputs and combine them into an array within the function before submitting them to the verifier.
 
-### 4. Informational: [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11)
+### Refer 
 
-By: **sebastiantf**
+- [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12) By [sebastiantf]()
 
-Currently both the array [`addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L68) and the mapping [`_ownershipProofByAddress`](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L83C41-L83C65) are being used to track address ownership proofs. But the use of both seems unnecessary, inefficient and error-prone.
+### 4. Informational: Use only mapping for `addressOwnershipProofs`
 
-Didn't really notice any specific use-case being served by the array.
+Currently both the array [`addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L68) and the mapping [`_ownershipProofByAddress`](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L83C41-L83C65) are being used to track address ownership proofs. But the use of both seems unnecessary, inefficient and error-prone. Didn't really notice any specific use-case being served by the array.
 
-If there isn't really any use of the array, then I suppose we could remove the array, modify the mapping to store the `AddressOwnershipProof` struct and only use that. This is probably going to be a lot more efficient and simpler
+If there isn't really any use of the array, then I suppose we could remove the array, modify the mapping to store the `AddressOwnershipProof` struct and only use that. This is probably going to be a lot more efficient and simpler.
 
-### 5. Informational: [`Summa.sol` : Issue with `submitProofOfAddressOwnership()`](https://github.com/zBlock-2/summa-solvency-schneier/issues/7)
+#### Refer 
 
-By: **zzzuhaibmohd**
+- [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11) by [sebastiantf]()
+
+### 5. Informational: `Summa.sol` : Issue with `submitProofOfAddressOwnership()`
 
 **Issue #1**: `submitProofOfAddressOwnership()` does not allow to resubmit `AddressOwnershipProof` twice
 
@@ -232,18 +235,22 @@ But imagine a scenario, wherein wrong signature or message was submitted during 
 
 The root cause of the issue can be slightly linked to the first issue, The hash calculation at [Summa.sol#L117](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L117) does not take into consideration the chain as the input during calculation. While this might not look an issue for EVM chains. But when considering a multi chain architecture, using at least two input for generating the hash is a good practice. Currently thinking of a practical impact due to this.
 
-### 6. Informational: [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6)
+#### Refer
 
-By: **zzzuhaibmohd**
+- [`Summa.sol` : Issue with `submitProofOfAddressOwnership()`](https://github.com/zBlock-2/summa-solvency-schneier/issues/7) by [zzzuhaibmohd]()
+
+### 6. Informational: `Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership
 
 The contracts `Summa.sol` does not implement a 2-Step-Process for transferring ownership.
 So ownership of the contract can easily be lost when making a mistake when transferring ownership.
 
 While the probability if this happening is highly unlikely, it is better to follow best security measures.
 
-### 7. Informational: [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4)
+#### Refer
 
-By: **sebastiantf**
+- [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6) by [zzzuhaibmohd]()
+
+### 7. Informational: Potential `Summa::submitCommitment()` Gas limits
 
 [`Summa::submitCommitment()`](https://github.com/zBlock-2/summa-solvency-schneier/blob/main/contracts/src/Summa.sol#L144) takes in two arrays and [loops](https://github.com/zBlock-2/summa-solvency-schneier/blob/main/contracts/src/Summa.sol#L159) once over them:
 
@@ -262,17 +269,21 @@ Current tests in the Summa contract codebase doesn't test this limitation as it 
 
 It shouldn't be too hard to add a test that tests such limits and it is WIP. But if it turns out that the contract is not able to handle such large number of cryptocurrencies, it would be a limitation to be aware of. It might be necessary to split the submission into multiple commitments for the same `timestamp`.
 
-This would warrant if the circuit implementation supports this kind of split submission. Afaik, a single commitment is for the entire state of the exchange at a given time. If I'm wrong, please correct me, and feel free to close this issue.
+This would warrant if the circuit implementation supports this kind of split submission. Afaik, a single commitment is for the entire state of the exchange at a given time. 
 
-### 8. Informational: [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15)
+#### Refer
 
-By: **bbresearcher**
+- [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4) by [sebastiantf]()
+
+### 8. Informational: Magic numbers used in code of MST Circuit to create PoseidonChip
 
 There are hardcoded integers used in the construction of the Poseidon chips
 
-### 9. Informational: [Review of the `Summa.sol` smart contract](https://github.com/zBlock-2/summa-solvency-diffie/issues/12)
+#### Refer 
 
-By: **hrishibhat**
+- [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15) by [bbresearcher]()
+
+### 9. Informational: Review of the `Summa.sol` smart contract
 
 The Summa contract allows for centralized exchanges to prove to their users of the inclusion of their balances in the Merke Sum Tree.
 The Summa contract is currently setup with the configuration that includes:
@@ -287,9 +298,11 @@ The CEX owner submits a commitment using `submitCommitment` about its liabilitie
 
 Once the commitment is submitted the user can then verify using the `verifyInclusionProof` function with relevant proof issued by the CEX and the public inputs against the exchange commitment for the respective timestamp that their balances are accurately represented in the CEX's Merkle tree. The verification is done by an external Inclusion verifier contract.
 
-## Final remarks
+#### Refer
 
-## Recommendations
+- [Review of the `Summa.sol` smart contract](https://github.com/zBlock-2/summa-solvency-diffie/issues/12) by [hrishibhat]()
+
+## Final remarks
 
 ## Appendix
 
