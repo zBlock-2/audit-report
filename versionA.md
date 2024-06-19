@@ -190,7 +190,7 @@ The range check uses function `lookup_any` which was introduced in PSE fork to a
 
 #### Refer
 
-- [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18) By  [obatirou]()
+- [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18) by  [obatirou]()
 
 ### 2. Informational: `InclusionVerifier.yul`not generated
 
@@ -211,7 +211,7 @@ Since they are not homogenous or not values that have the same meaning, it might
 
 ### Refer 
 
-- [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12) By [sebastiantf]()
+- [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12) by [sebastiantf]()
 
 ### 4. Informational: Use only mapping for `addressOwnershipProofs`
 

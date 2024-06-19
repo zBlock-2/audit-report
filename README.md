@@ -11,7 +11,7 @@ There is a [dedicated page](https://yacademy.dev) containing all outputs from th
 
 ## Overview of the Summa Proof of Solvency Protocol
 
-Blockchain technology can facilitate uncensorable and self-soverign control of one’s assets. Users nonetheless regularly transfer ownership of their assets to centralized entities for various needs, chief among which is trading of cryptocurrencies and the on/off-ramping of fiat. Such centralized entities may themselves and in turn transfer ownership to secondary specialized custodian entities or other service providers such as investment funds. Unfortunately, such centralized control and handling of user funds can lead to catastrophic situations such as the mishandling of private keys which may lead to internal or external hacks, or the outright misuse of funds for trading or for use as collateral to access capital -which can result in liquidations in extreme market conditions.
+Blockchain technology can facilitate uncensorable and self-sovereign control of one’s assets. Users nonetheless regularly transfer ownership of their assets to centralized entities for various needs, chief among which is trading of cryptocurrencies and the on/off-ramping of fiat. Such centralized entities may themselves and in turn transfer ownership to secondary specialized custodian entities or other service providers such as investment funds. Unfortunately, such centralized control and handling of user funds can lead to catastrophic situations such as the mishandling of private keys which may lead to internal or external hacks, or the outright misuse of funds for trading or for use as collateral to access capital -which can result in liquidations in extreme market conditions.
 
 From the users point of view, they only see a promise from the centralized entity that they hold their funds. But this only represents entries in an accounting database, and may or may not reflect the state of wallets that are under the control of the centralized entity. The perennial question is: are all user funds available and liquid for immediate withdrawal at a given moment in time?
 
@@ -19,7 +19,7 @@ Summa takes an approach that focuses on binding the custodian to a certain claim
 
 Summa’s 2-sided mechanism that overall provides a proof of solvency of an entity provides two useful proofs:
 
-(a) **Proof of grand sums**: the centralized entity submits a public cryptographic [commitment](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/contracts/src/Summa.sol#L144) clamining the sum of each asset in wallets it controls is greater than or equal a _claimed_ total sum of _liabilities_ to its users in that asset. In the KZG-based Version B of the protocol, a a [proof is attached](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230) to the commitment attesting it was calculated correctly.
+(a) **Proof of grand sums**: the centralized entity submits a public cryptographic [commitment](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/contracts/src/Summa.sol#L144) clamining the sum of each asset in wallets it controls is greater than or equal a _claimed_ total sum of _liabilities_ to its users in that asset. In the KZG-based Version B of the protocol, a [proof is attached](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230) to the commitment attesting it was calculated correctly.
 
 
 
