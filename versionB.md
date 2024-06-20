@@ -382,20 +382,20 @@ Highlighter works on a set of rules to look for error prone areas such as incorr
 
 The audit employed a blend of automated tools and manual examination conducted by the fellows and residents. Techniques included detailed code reviews, static and dynamic analysis, fuzzing, and penetration testing to ensure a thorough validation of the protocol’s security measures.
 
-- 1. **Tool Integration:**
+- **Tool Integration:**
 The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
     - **Halo2-analyzer**: Verified all circuit constraints.
     - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
     - **Highlighter**: Identified potential code issues needing closer examination.
     - **NPM and Cargo Audits**: Checked dependencies for known vulnerabilities.
     - **Clippy**: Ensured Rust code quality and best practices.
-- 2. **Analytical Techniques:**
+- **Analytical Techniques:**
 The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
     - **Static Analysis**: Examined the source code for vulnerabilities without execution.
     - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
-- 3. **Expert Review:**
+- **Expert Review:**
 We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
-- 4. **Feedback and Improvements:**
+- **Feedback and Improvements:**
 An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
-- 5. **Documentation:**
+- **Documentation:**
 Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
