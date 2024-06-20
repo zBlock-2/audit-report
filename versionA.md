@@ -25,32 +25,58 @@ Auditors:
 
 ## Table of Contents
 
-- [Protocol Summary](#protocol-summary)
-- [Scope](#scope)
-- [Automated Testing](#automated-testing)
-- [Findings](#findings)
-  - [High](#high):
-    - [1. Missing username range check in `big_intify_username` & `big_uint_to_fp`](#1-high-missing-username-range-check-in-big_intify_username--big_uint_to_fp)
-    - [2. Sum balance overflow](#2-high-sum-balance-overflow)
-    - [3. Inconsistency in range checks](#3-high-inconsistency-in-range-checks)
-  - [Low](#low)
-    - [1. Mixed endian usage in code](#1-low-mixed-endian-usage-in-code)
-  - [Informational](#informational)
-    - [1. Range check uses lookup_any instead of lookup](#1-informational-range-check-uses-lookup_any-instead-of-lookup)
-    - [2. `InclusionVerifier.yul`not generated](#2-informational-inclusionverifieryulnot-generated)
-    - [3. Improvement to public inputs in contract](#3-informational-improvement-to-public-inputs-in-contract)
-    - [4. Use only mapping for `addressOwnershipProofs`](#4-informational-use-only-mapping-for-addressownershipproofs)
-    - [5. `Summa.sol` : Issue with `submitProofOfAddressOwnership()`](#5-informational-summasol--issue-with-submitproofofaddressownership)
-    - [6. `Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](#6-informational-summasol--ownable-does-not-implement-2-step-process-for-transferring-ownership)
-    - [7. Potential `Summa::submitCommitment()` Gas limits](#7-informational-potential-summasubmitcommitment-gas-limits)
-    - [8. Magic numbers used in code of MST Circuit to create PoseidonChip](#8-informational-magic-numbers-used-in-code-of-mst-circuit-to-create-poseidonchip)
-    - [9. Review of the `Summa.sol` smart contract](#9-informational-review-of-the-summasol-smart-contract)
-- [Final remarks](#final-remarks)
-- [Appendix](#appendix)
-  - [Automated Analysis](#a---automated-analysis)
-  - [Fuzz Testing](#b---fuzz-testing)
-  - [Code Coverage](#c---code-coverage)
-  - [Methodology]()
+- [yAcademy Summa Version A Review](#yacademy-summa-version-a-review)
+  - [Table of Contents](#table-of-contents)
+  - [Protocol Summary](#protocol-summary)
+    - [Overview of the MST-based Summa Version A (this report)](#overview-of-the-mst-based-summa-version-a-this-report)
+  - [Automated Testing](#automated-testing)
+    - [Automated Analysis](#automated-analysis)
+    - [Fuzz Testing](#fuzz-testing)
+    - [Code Coverage](#code-coverage)
+  - [Scope](#scope)
+  - [Findings Explanation](#findings-explanation)
+  - [Findings](#findings)
+    - [High](#high)
+    - [1. High: Missing username range check in `big_intify_username` \& `big_uint_to_fp`](#1-high-missing-username-range-check-in-big_intify_username--big_uint_to_fp)
+      - [Recommendation](#recommendation)
+      - [Refer](#refer)
+    - [2. High: Sum balance overflow](#2-high-sum-balance-overflow)
+      - [Refer](#refer-1)
+    - [3. High: Inconsistency in range checks](#3-high-inconsistency-in-range-checks)
+      - [Refer](#refer-2)
+    - [Low](#low)
+    - [1. Low: Mixed endian usage in code](#1-low-mixed-endian-usage-in-code)
+      - [Refer](#refer-3)
+    - [Informational](#informational)
+    - [1. Informational: Range check uses lookup\_any instead of lookup](#1-informational-range-check-uses-lookup_any-instead-of-lookup)
+      - [Refer](#refer-4)
+    - [2. Informational: `InclusionVerifier.yul`not generated](#2-informational-inclusionverifieryulnot-generated)
+      - [Refer](#refer-5)
+    - [3. Informational: Improvement to public inputs in contract](#3-informational-improvement-to-public-inputs-in-contract)
+    - [Refer](#refer-6)
+    - [4. Informational: Use only mapping for `addressOwnershipProofs`](#4-informational-use-only-mapping-for-addressownershipproofs)
+      - [Refer](#refer-7)
+    - [5. Informational: `Summa.sol` : Issue with `submitProofOfAddressOwnership()`](#5-informational-summasol--issue-with-submitproofofaddressownership)
+      - [Refer](#refer-8)
+    - [6. Informational: `Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](#6-informational-summasol--ownable-does-not-implement-2-step-process-for-transferring-ownership)
+      - [Refer](#refer-9)
+    - [7. Informational: Potential `Summa::submitCommitment()` Gas limits](#7-informational-potential-summasubmitcommitment-gas-limits)
+      - [Refer](#refer-10)
+    - [8. Informational: Magic numbers used in code of MST Circuit to create PoseidonChip](#8-informational-magic-numbers-used-in-code-of-mst-circuit-to-create-poseidonchip)
+      - [Refer](#refer-11)
+    - [9. Informational: Review of the `Summa.sol` smart contract](#9-informational-review-of-the-summasol-smart-contract)
+      - [Refer](#refer-12)
+  - [Final remarks](#final-remarks)
+  - [Appendix](#appendix)
+    - [A - Automated Analysis](#a---automated-analysis)
+      - [1. Halo2-analyzer](#1-halo2-analyzer)
+      - [2. Polyexen-demo](#2-polyexen-demo)
+      - [3. NPM Audit](#3-npm-audit)
+      - [4. Cargo Audit](#4-cargo-audit)
+      - [5. Clippy](#5-clippy)
+    - [B - Fuzz Testing](#b---fuzz-testing)
+    - [C - Code Coverage](#c---code-coverage)
+    - [Methodology](#methodology)
 
 ## Protocol Summary
 
@@ -426,3 +452,25 @@ We raised the following pull requests to increase code coverage & emphasize on t
 - [PR#17](https://github.com/zBlock-2/summa-solvency-schneier/pull/17) to add end-to-end testing with full prover and verifier (instead of mock prover).
 - [PR#8](https://github.com/zBlock-2/summa-solvency-schneier/pull/8/files) to include cost estimation for circuits using `CircuitCost`
 - [PR#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5) is a stress test to determine the potential gas limits of `Summa::submitCommitment()`
+
+### [Methodology](#methodology)
+
+The audit employed a blend of automated tools and manual examination conducted by the fellows and residents. Techniques included detailed code reviews, static and dynamic analysis, fuzzing, and penetration testing to ensure a thorough validation of the protocol’s security measures.
+
+- 1. **Tool Integration:**
+The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
+    - **Halo2-analyzer**: Verified all circuit constraints.
+    - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
+    - **Highlighter**: Identified potential code issues needing closer examination.
+    - **NPM and Cargo Audits**: Checked dependencies for known vulnerabilities.
+    - **Clippy**: Ensured Rust code quality and best practices.
+- 2. **Analytical Techniques:**
+The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
+    - **Static Analysis**: Examined the source code for vulnerabilities without execution.
+    - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+- 3. **Expert Review:**
+We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
+- 4. **Feedback and Improvements:**
+An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
+- 5. **Documentation:**
+Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.

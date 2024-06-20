@@ -23,32 +23,45 @@ Auditors:
 
 ## Table of Contents
 
-- [Protocol Summary](#protocol-summary)
-- [Scope](#scope)
-- [Automated testing](#automated-testing)
-- [Findings](#findings)
-  - [High](#high):
-    - The inclusion proof reveals whether a user holds a specific token
-    - Wrong verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`
-    - Fake user Inclusion Proof verified in contract
-    - Username overflow
-  - [Medium](#medium):
-    - The return value of `GrandSumVerifier` should be tested
-  - [Low](#low):
-    - Incorrect permutation length in `validateVKPermuationsLength`
-    - CSV parsing allows duplicate crypto tokens
-    - The return value of `GrandSumVerifier` should be tested
-    - Range check tests are unreliable regarding the number of overflows
-  - [Informational](#informational):
-    - Security concerns in `Summa.sol`
-    - Update memory locations in verifiers to save gas
-    - Dynamic Errors not handled in Box of Errors for Function Results
-    - Use of unwrap in core files and improper error handling
-    - Automated tests for dependency vulnerabilities and code quality
-- [Final remarks](#final-remarks)
-- [Appendix](#appendix)
-  - [Automated Analysis](#a---automated-analysis)
-  - [Methodology]()
+- [yAcademy Summa Version B Review](#yacademy-summa-version-b-review)
+  - [Table of Contents](#table-of-contents)
+  - [Protocol Summary](#protocol-summary)
+    - [Overview of the KZG-based Implementation of the Summa Proof of Solvency Protocol](#overview-of-the-kzg-based-implementation-of-the-summa-proof-of-solvency-protocol)
+  - [Scope](#scope)
+  - [Automated testing](#automated-testing)
+    - [Automated Analysis](#automated-analysis)
+  - [Findings Explanation](#findings-explanation)
+  - [Findings](#findings)
+    - [High](#high)
+    - [1. High: The inclusion proof reveals whether a user holds a specific token](#1-high-the-inclusion-proof-reveals-whether-a-user-holds-a-specific-token)
+    - [2. High: Wrong verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`](#2-high-wrong-verifying-key-contract-permutation-length-can-be-considered-valid-by-validatevkpermutationslength)
+    - [3. High: Fake user Inclusion Proof verified in contract](#3-high-fake-user-inclusion-proof-verified-in-contract)
+    - [4. High: Username overflow](#4-high-username-overflow)
+    - [Medium](#medium)
+    - [1. Medium: The return value of `GrandSumVerifier` should be tested](#1-medium-the-return-value-of-grandsumverifier-should-be-tested)
+    - [Low](#low)
+    - [1. Low: Incorrect permutation length in `validateVKPermuationsLength`](#1-low-incorrect-permutation-length-in-validatevkpermuationslength)
+    - [2. Low: CSV parsing allows duplicate crypto tokens](#2-low-csv-parsing-allows-duplicate-crypto-tokens)
+    - [3. Low: The return value of `GrandSumVerifier` should be tested](#3-low-the-return-value-of-grandsumverifier-should-be-tested)
+    - [4. Low: Range check tests are unreliable regarding the number of overflows](#4-low-range-check-tests-are-unreliable-regarding-the-number-of-overflows)
+    - [Informational](#informational)
+    - [1. Informational: Security concerns in `Summa.sol`](#1-informational-security-concerns-in-summasol)
+    - [2. Informational: Update memory locations in verifiers to save gas](#2-informational-update-memory-locations-in-verifiers-to-save-gas)
+    - [3. Informational: Dynamic Errors not handled in Box of Errors for Function Results](#3-informational-dynamic-errors-not-handled-in-box-of-errors-for-function-results)
+    - [4. Informational: Use of unwrap in core files and improper error handling](#4-informational-use-of-unwrap-in-core-files-and-improper-error-handling)
+  - [Final remarks](#final-remarks)
+  - [Appendix](#appendix)
+    - [A - Automated Analysis](#a---automated-analysis)
+      - [1. Halo2-analyzer](#1-halo2-analyzer)
+    - [1. Unused Gate](#1-unused-gate)
+    - [2. Unused columns](#2-unused-columns)
+    - [3. Underconstrained Cells](#3-underconstrained-cells)
+      - [2. Polyexen-demo](#2-polyexen-demo)
+      - [3. Highlighter](#3-highlighter)
+      - [4. NPM Audit](#4-npm-audit)
+      - [5. Cargo Audit](#5-cargo-audit)
+      - [6. Clippy](#6-clippy)
+    - [Methodology](#methodology)
 
 ## Protocol Summary
 
@@ -64,8 +77,6 @@ The prover produces a commitment `C` to the polynomial and:
 
 - An opening [proof](https://github.com/summa-dev/summa-solvency/blob/bd3a3d4d8fda6661e4eede00cf6176d66cb00858/prover/src/circuits/tests.rs#L167) at `x=0` to [the public](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230)
 - An opening proof at `(w_j)^i` for the `i-th` user, who can can verify inclusion not only that the evaluation is correct but also that the commitment `C` they evaluated against is the same as the public commitment.
-
-## Methodology
 
 ## Scope
 
@@ -365,3 +376,26 @@ Highlighter works on a set of rules to look for error prone areas such as incorr
 #### 6. Clippy
 
 `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/clippy/output.md).
+
+
+### [Methodology](#methodology)
+
+The audit employed a blend of automated tools and manual examination conducted by the fellows and residents. Techniques included detailed code reviews, static and dynamic analysis, fuzzing, and penetration testing to ensure a thorough validation of the protocol’s security measures.
+
+- 1. **Tool Integration:**
+The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
+    - **Halo2-analyzer**: Verified all circuit constraints.
+    - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
+    - **Highlighter**: Identified potential code issues needing closer examination.
+    - **NPM and Cargo Audits**: Checked dependencies for known vulnerabilities.
+    - **Clippy**: Ensured Rust code quality and best practices.
+- 2. **Analytical Techniques:**
+The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
+    - **Static Analysis**: Examined the source code for vulnerabilities without execution.
+    - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+- 3. **Expert Review:**
+We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
+- 4. **Feedback and Improvements:**
+An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
+- 5. **Documentation:**
+Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
