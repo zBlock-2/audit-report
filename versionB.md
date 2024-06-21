@@ -386,9 +386,7 @@ The audit employed a blend of automated tools and manual examination conducted b
 The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
     - **Halo2-analyzer**: Verified all circuit constraints.
     - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
-    - **Highlighter**: Identified potential code issues needing closer examination.
-    - **NPM and Cargo Audits**: Checked dependencies for known vulnerabilities.
-    - **Clippy**: Ensured Rust code quality and best practices.
+    - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
 - **Analytical Techniques:**
 The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
     - **Static Analysis**: Examined the source code for vulnerabilities without execution.
