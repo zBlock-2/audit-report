@@ -33,6 +33,7 @@ Auditors:
 - [Automated testing](#automated-testing)
   - [Automated Analysis](#automated-analysis)
   - [Fuzz Testing](#fuzz-testing)
+  - [Code Coverage](#code-coverage)
 - [Findings](#findings)
   - [Findings Explanation](#findings-explanation)
   - [High](#high)
@@ -62,6 +63,8 @@ Auditors:
     - [4. NPM Audit](#4-npm-audit)
     - [5. Cargo Audit](#5-cargo-audit)
     - [6. Clippy](#6-clippy)
+  - [B - Fuzz Testing](#b---fuzz-testing)
+  - [C - Code Coverage](#c---code-coverage)
 
 # Protocol Summary
 
@@ -143,7 +146,7 @@ yAcademy and the auditors make no warranties regarding the security of the code 
 
 We use automated techniques to extensively test the security properties of software. We use both open-source static analysis and fuzzing utilities, along with tools developed in house, to perform automated testing of source code.
 
-### Automated Analysis
+## Automated Analysis
 
 We used the following tools in the automated testing phase of this project:
 
@@ -156,11 +159,15 @@ We used the following tools in the automated testing phase of this project:
 | [cargo-audit](https://crates.io/crates/cargo-audit)                           | `cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates.              | [Appendix A.4](#5-cargo-audit)    |
 | [clippy](https://doc.rust-lang.org/clippy/)                                   | `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using clippy helps ensure your Rust code is clean, efficient, and follows best practices. | [Appendix A.5](#5-cargo-audit)    |
 
-### Fuzz Testing
+## Fuzz Testing
 
 Fuzz testing, also known as fuzzing, is an automated testing technique used to discover vulnerabilities and bugs in software.
 
-We set up a fuzz test suite using Foundry for the smart contracts. [Appendix B](#b---fuzzing-testing) contains a detailed description of the setup and deployment details.
+We set up a fuzz test suite using Foundry for the smart contracts. [Appendix B](#b---fuzz-testing) contains a detailed description of the setup and deployment details.
+
+## Code Coverage
+
+We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage. Refer to [Appendix C](#c---code-coverage) for more detailed information on testing & code coverage.
 
 # Findings
 
@@ -422,11 +429,11 @@ Using `abi.encodePacked()` reduces deployments gas from 1961848 to 1915414 as de
 ## Final remarks
 
 - The Summa Solvency Protocol assumes that :
-    - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
-    - The KZG commitment scheme is completely binding & hiding with homomorphic properties
+  - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
+  - The KZG commitment scheme is completely binding & hiding with homomorphic properties
 - Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who donot verify their inclusion proofs.
 - The library used for trusted setup - [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) is unaudited & it's contents are unreliable as there is no checksum available to validate its contents
-- The security of the circuit depends on the security of the cryptographic primitives such as KZG Commitments. Some of the known pitfalls of KZG include : 
+- The security of the circuit depends on the security of the cryptographic primitives such as KZG Commitments. Some of the known pitfalls of KZG include :
   - Usage of small order elements leading to compromised security
   - Recovery of polynomials using Polynomial interpolation when all t+1 points are exposed
 - Overall, the code demonstrates good implementation of mathematical operations and basic functionality. However, it could benefit from more extensive documentation, testing and additional tools such as [polyexen](https://github.com/zBlock-2/summa-solvency-diffie/pull/5) to view cell data.
@@ -461,6 +468,7 @@ unused column: Column { index: 4, column_type: Advice }
 unused column: Column { index: 5, column_type: Advice }
 unused column: Column { index: 1, column_type: Advice }
 ```
+
 - This is due to the balances being 0. Hence, a false positive.
 
 #### 3. Underconstrained Cells
@@ -516,10 +524,16 @@ Highlighter works on a set of rules to look for error prone areas such as incorr
 
 `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/clippy/output.md).
 
-## B - Fuzzing Testing
+## B - Fuzz Testing
 
 Fuzz testing, also known as fuzzing, is an automated testing technique used to discover vulnerabilities and bugs in software.
 
 In the context of smart contracts, fuzz testing involves providing invalid, unexpected, or random data as inputs to the smart contract's functions to see how they behave under stress and to identify potential security vulnerabilities or unexpected behaviors.
 
 We used Foundry to generate fuzz tests for the smart contracts as specified in this [PR#1](https://github.com/zBlock-2/summa-solvency/pull/1/commits/2b3b3150835c7821fa62206b3b15ee9ebd1790c9#diff-fd578f7055e92d1627d1766c1de70e56e929946494bdd590cc146ad808e7e34f)
+
+## C - Code Coverage
+
+We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage. Click [here](https://clang.llvm.org/docs/SourceBasedCodeCoverage.html#interpreting-reports) for information about interpreting this report.
+
+![alt text](./assets/v2.png)

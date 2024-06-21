@@ -518,9 +518,9 @@ Upon fuzzing the `utils` in [PR#6](https://github.com/zBlock-2/summa-solvency-di
 
 ## C - Code Coverage
 
-We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage.
+We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage. Click [here](https://clang.llvm.org/docs/SourceBasedCodeCoverage.html#interpreting-reports) for information about interpreting this report.
 
-![alt text](./assets/image.png)
+![alt text](./assets/v1.png)
 
 We raised the following pull requests to increase code coverage & emphasize on testing.
 
