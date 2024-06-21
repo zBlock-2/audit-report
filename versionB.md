@@ -32,6 +32,7 @@ Auditors:
 - [Code Evaluation Matrix](#code-evaluation-matrix)
 - [Automated testing](#automated-testing)
   - [Automated Analysis](#automated-analysis)
+  - [Fuzz Testing](#fuzz-testing)
   - [Code Coverage](#code-coverage)
 - [Findings](#findings)
   - [Findings Explanation](#findings-explanation)
@@ -52,6 +53,7 @@ Auditors:
     - [2. Informational: Update memory locations in verifiers to save gas](#2-informational-update-memory-locations-in-verifiers-to-save-gas)
     - [3. Informational: Dynamic Errors not handled in Box of Errors for Function Results](#3-informational-dynamic-errors-not-handled-in-box-of-errors-for-function-results)
     - [4. Informational: Use of unwrap in core files and improper error handling](#4-informational-use-of-unwrap-in-core-files-and-improper-error-handling)
+    - [5. Informational: Using `abi.encodePacked()` saves gas](#5-informational-using-abiencodepacked-saves-gas)
 - [Final remarks](#final-remarks)
 - [Appendix](#appendix)
   - [A - Automated Analysis](#a---automated-analysis)
@@ -132,9 +134,9 @@ yAcademy and the auditors make no warranties regarding the security of the code 
 | Mathematics              | Good    | No heavy mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Complexity               | Good    | The code is easy to understand and closely follows the specification                                                                                                                                                                                                                                                                                                                                                                                     |
 | Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier) which is not recommended in production                                                                                                       |
-| Cryptography             | Good    | However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                                                                                                                       |
+| Cryptography             | Good    | The codebase extensively relies on the binding & hiding properties of KZG Commitment Scheme. However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                          |
 | Code stability           | Good    | The code was reviewed at a specific commit. The code did not changed during the review. Moreover, it is not likely to change significantly with the addition of features or updates                                                                                                                                                                                                                                                                      |
-| Documentation            | Good    | Summa codebase comprises a centralized and up-to-date [Gitbook documentation](https://summa.gitbook.io/summa/v/1). However, we recommend aggregating the limitations and the attack vectors of the Summa Protocol in the documentation.                                                                                                                                                                                                                  |
+| Documentation            | Good    | Summa codebase comprises a centralized and up-to-date [Gitbook documentation](https://summa.gitbook.io/summa). However, we recommend aggregating the limitations and the attack vectors of the Summa Protocol in the documentation.                                                                                                                                                                                                                      |
 | Monitoring               | N/A     | The protocol is intended to be integrated by other systems or dApps which will be responsible for the monitoring                                                                                                                                                                                                                                                                                                                                         |
 | Testing and verification | Average | The protocol contains only a few tests for the circuits. It is recommended to add more tests to increase the test coverage. When it comes to circuits, we believe it is necessary to develop an adversarial testing process, especially focused on malicious prover behavior. We also recommend fuzz testing and incorporating tools we used in [Automated Testing](#automated-testing) in Summa's software development lifecycle to produce secure code |
 
@@ -154,6 +156,12 @@ We used the following tools in the automated testing phase of this project:
 | [npm-audit](https://docs.npmjs.com/cli/v10/commands/npm-audit)                | `npm audit` scans your project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Node.js application secure by identifying and addressing potential risks in your packages.                | [Appendix A.3](#4-npm-audit)      |
 | [cargo-audit](https://crates.io/crates/cargo-audit)                           | `cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates.              | [Appendix A.4](#5-cargo-audit)    |
 | [clippy](https://doc.rust-lang.org/clippy/)                                   | `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using clippy helps ensure your Rust code is clean, efficient, and follows best practices. | [Appendix A.5](#5-cargo-audit)    |
+
+### Fuzz Testing
+
+Fuzz testing, also known as fuzzing, is an automated testing technique used to discover vulnerabilities and bugs in software.
+
+We set up a fuzz test suite using Foundry for the smart contracts. [Appendix B](#b---fuzzing-testing) contains a detailed description of the setup and deployment details.
 
 # Findings
 
@@ -324,7 +332,7 @@ For example, user2 balance0 is zero, but the test error contains `Perform range 
 
 #### Refer
 
-- [Range check tests are unreliable regarding the number of overflows](https://github.com/zBlock-2/summa-solvency/issues/3) by [qpzm](https://github.com/qpzm) , [rkdud007](https://github.com/rkdud007)()
+- [Range check tests are unreliable regarding the number of overflows](https://github.com/zBlock-2/summa-solvency/issues/3) by [qpzm](https://github.com/qpzm) , [rkdud007](https://github.com/rkdud007)
 
 ## Informational
 
@@ -381,11 +389,12 @@ Verifier contracts specify memory addresses to load constants from the trusted s
 It starts from `0x220` in [GrandSumVerifier](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/GrandSumVerifier.sol#L12) and from `\0x200` in [InclusionVerifier](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/InclusionVerifier.sol#L11).
 However, it can start from `0x180`.
 
-The maximum memory size used in both verifiers is `0x180`, so it is recommended to save constants from memory `0x180`. The saved memory is 160 and 128 bytes respectively.
+The maximum memory size used in both verifiers is `0x180`, so it is recommended to save constants from memory `0x180` as demonstrated in [PR#19](https://github.com/zBlock-2/summa-solvency/pull/19). The saved memory is 160 and 128 bytes respectively.
 
 #### Refer
 
-- [Update memory locations in verifiers to save gas](https://github.com/zBlock-2/summa-solvency/issues/18) by [qpzm](https://github.com/qpzm) and [rkdud007](https://github.com/rkdud007)()
+- [Update memory locations in verifiers to save gas](https://github.com/zBlock-2/summa-solvency/issues/18) by [qpzm](https://github.com/qpzm) and [rkdud007](https://github.com/rkdud007)
+- [Verifier(GrandSumVerifier.sol and InclusionVerifier.sol) fixes](https://github.com/zBlock-2/summa-solvency/pull/19) by [qpzm](https://github.com/qpzm) and [rkdud007](https://github.com/rkdud007)
 
 ## 3. Informational: Dynamic Errors not handled in Box of Errors for Function Results
 
@@ -403,9 +412,25 @@ Unwrap is usually a shortcut to bypass implementing proper error handling in Rus
 
 - [Use of unwrap in core files and improper error handling](https://github.com/zBlock-2/summa-solvency/issues/7) by [sachindkagrawal15](https://github.com/sachindkagrawal15)
 
+## 5. Informational: Using `abi.encodePacked()` saves gas
+
+Using `abi.encodePacked()` reduces deployments gas from 1961848 to 1915414 as demonstrated in [PR#11](https://github.com/zBlock-2/summa-solvency/pull/11)
+
+#### Refer
+
+- [perf: use abi.encodePacked()](https://github.com/zBlock-2/summa-solvency/pull/11) by [sebastiantf](https://github.com/sebastiantf)
+
 ## Final remarks
 
-- gppd
+- The Summa Solvency Protocol assumes that :
+    - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
+    - The KZG commitment scheme is completely binding & hiding with homomorphic properties
+- Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who donot verify their inclusion proofs.
+- The library used for trusted setup - [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) is unaudited & it's contents are unreliable as there is no checksum available to validate its contents
+- The security of the circuit depends on the security of the cryptographic primitives such as KZG Commitments. Some of the known pitfalls of KZG include : 
+  - Usage of small order elements leading to compromised security
+  - Recovery of polynomials using Polynomial interpolation when all t+1 points are exposed
+- Overall, the code demonstrates good implementation of mathematical operations and basic functionality. However, it could benefit from more extensive documentation, testing and additional tools such as [polyexen](https://github.com/zBlock-2/summa-solvency-diffie/pull/5) to view cell data.
 
 # Appendix
 
@@ -437,6 +462,7 @@ unused column: Column { index: 4, column_type: Advice }
 unused column: Column { index: 5, column_type: Advice }
 unused column: Column { index: 1, column_type: Advice }
 ```
+- This is due to the balances being 0. Hence, a false positive.
 
 #### 3. Underconstrained Cells
 
@@ -491,5 +517,10 @@ Highlighter works on a set of rules to look for error prone areas such as incorr
 
 `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/clippy/output.md).
 
-## B - Fuzzing
+## B - Fuzzing Testing
 
+Fuzz testing, also known as fuzzing, is an automated testing technique used to discover vulnerabilities and bugs in software.
+
+In the context of smart contracts, fuzz testing involves providing invalid, unexpected, or random data as inputs to the smart contract's functions to see how they behave under stress and to identify potential security vulnerabilities or unexpected behaviors.
+
+We used Foundry to generate fuzz tests for the smart contracts as specified in this [PR#1](https://github.com/zBlock-2/summa-solvency/pull/1/commits/2b3b3150835c7821fa62206b3b15ee9ebd1790c9#diff-fd578f7055e92d1627d1766c1de70e56e929946494bdd590cc146ad808e7e34f)

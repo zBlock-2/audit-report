@@ -393,7 +393,12 @@ Likewise we would also need the following checks :
 
 # Final remarks
 
-- good
+- The Summa Solvency Protocol assumes that :
+    - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
+    - The Merkle Sum Tree is a cryptographic structure which inherits the security properties of the Poseidon hash function
+- Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who donot verify their inclusion proofs.
+- The library used for trusted setup - [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) is unaudited & it's contents are unreliable as there is no checksum available to validate its contents
+- Overall, the code demonstrates good implementation of mathematical operations and basic functionality. However, it could benefit from more extensive documentation, testing and additional tools such as [polyexen](https://github.com/zBlock-2/summa-solvency-diffie/pull/5) to view cell data.
 
 # Appendix
 
