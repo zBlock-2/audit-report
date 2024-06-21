@@ -26,7 +26,7 @@ Auditors:
 # Table of Contents
 
 - [Protocol Summary](#protocol-summary)
-  - [Overview of the MST-based Summa Version A (this report)](#overview-of-the-mst-based-summa-version-a-this-report)
+  - [Overview of the MST-based implementation of Summa Solvency (Version A)](#overview-of-the-mst-based-implementation-of-summa-solvency-version-a)
 - [Scope](#scope)
   - [Audit Objectives and Components](#audit-objectives-and-components)
   - [Scope of Files and Folders](#scope-of-files-and-folders)
@@ -70,7 +70,7 @@ Auditors:
 
 _For a high-level overview of the Summa protocol, [see this](./README.md#overview-of-the-summa-proof-of-solvency-protocol)_.
 
-## Overview of the MST-based Summa Version A (this report)
+## Overview of the MST-based implementation of Summa Solvency (Version A)
 
 The core object in this version of the protocol is a Merkle sum tree (MST). Nodes in the tree all have two elements: a `hash`, and an array of `balances[b0, b1, .., bN]` where `N` is a global constant hardcoded to each instantiation of the protocol. In leaf nodes, the hash is `H(user_id_transposed_into_a_field_element, [balances])` , while in middle nodes and the root, the hash is `H([balances], left_child_hash, right_child_hash)`. A balance b_i in a leaf node represents a user’s balance of the `i-th` currency, while in a non-leave node in the tree it represents the aggregated sum of the `i-th` currency in all leaves that are descendants of said inner (or root) node. The ZK-friendly Poseidon hash function is used.
 
