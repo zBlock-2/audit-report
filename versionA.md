@@ -64,7 +64,6 @@ Auditors:
     - [5. Clippy](#5-clippy)
   - [B - Fuzz Testing](#b---fuzz-testing)
   - [C - Code Coverage](#c---code-coverage)
-  
 
 # Protocol Summary
 
@@ -214,7 +213,7 @@ We recommend that a range check is done inside the circuit or inside the smart c
 
 #### Refer
 
-- [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf]()
+- [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf](https://github.com/sebastiantf)
 - [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [parsley]()
 
 ## 2. High: Sum balance overflow
@@ -223,7 +222,7 @@ The lack of in-circuit range check for the sum of balances posesses a risk of ov
 
 #### Refer
 
-- [Sum Balance Overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10) by [zeroqn]()
+- [Sum Balance Overflow](https://github.com/zBlock-2/summa-solvency-diffie/issues/10) by [zeroqn](https://github.com/zeroqn)
 
 ## 3. High: Inconsistency in range checks
 
@@ -233,7 +232,7 @@ Root's max balance is `(NLEVEL - 1) * m` as can be inferred from circuits/contra
 
 #### Refer
 
-- [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14) by [y5yash]()
+- [Inconsistency in range checks](https://github.com/zBlock-2/summa-solvency-Turing/issues/14) by [y5yash](https://github.com/Y5Yash)
 
 ## Low
 
@@ -260,7 +259,7 @@ In the code [here](https://github.com/summa-dev/summa-solvency/blob/master/zk_pr
 
 #### Refer
 
-- [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17) by [bbresearcher]()
+- [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17) by [bbresearcher](https://github.com/bbresearcher)
 
 ## Informational
 
@@ -270,7 +269,7 @@ The [range check](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4
 
 #### Refer
 
-- [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18) By [obatirou]()
+- [Range check uses lookup_any instead of lookup](https://github.com/zBlock-2/summa-solvency-schneier/issues/18) By [obatirou](https://github.com/obatirou)
 
 ## 2. Informational: `InclusionVerifier.yul`not generated
 
@@ -280,7 +279,7 @@ It is mentioned in the Summa Book on the [summa-solvency page](https://summa.git
 
 #### Refer
 
-- [`InclusionVerifier.yul`not generated](https://github.com/zBlock-2/summa-solvency-schneier/issues/16) by [flyingnobita]()
+- [`InclusionVerifier.yul`not generated](https://github.com/zBlock-2/summa-solvency-schneier/issues/16) by [flyingnobita](https://github.com/flyingnobita)
 
 ## 3. Informational: Improvement to public inputs in contract
 
@@ -290,7 +289,7 @@ Since they are not homogenous or not values that have the same meaning, it might
 
 #### Refer
 
-- [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12) By [sebastiantf]()
+- [Improvement to public inputs in contract](https://github.com/zBlock-2/summa-solvency-schneier/issues/12) By [sebastiantf](https://github.com/sebastiantf)
 
 ## 4. Informational: Use only mapping for `addressOwnershipProofs`
 
@@ -300,7 +299,7 @@ We recommend removing the array, modifying the mapping to store the `AddressOwne
 
 #### Refer
 
-- [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11) by [sebastiantf]()
+- [Use only mapping for `addressOwnershipProofs`](https://github.com/zBlock-2/summa-solvency-schneier/issues/11) by [sebastiantf](https://github.com/sebastiantf)
 
 ## 5. Informational: `Summa.sol` : Improvements to generating the `addressHash`
 
@@ -329,8 +328,8 @@ According to [Coingecko](https://www.coingecko.com/en/exchanges/binance), Binanc
 
 #### Refer
 
-- [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4) by [sebastiantf]()
-- [test: submitting large no. of cryptocurrencies in single commitment](https://github.com/zBlock-2/summa-solvency-schneier/pull/5) by [sebastiantf]()
+- [Potential `Summa::submitCommitment()` Gas limits](https://github.com/zBlock-2/summa-solvency-schneier/issues/4) by [sebastiantf](https://github.com/sebastiantf)
+- [test: submitting large no. of cryptocurrencies in single commitment](https://github.com/zBlock-2/summa-solvency-schneier/pull/5) by [sebastiantf](https://github.com/sebastiantf)
 
 ## 8. Informational: Use constants to denote magic numbers in PoseidonChip
 
@@ -345,7 +344,7 @@ The [Poseidon chip](https://github.com/summa-dev/summa-solvency/blob/master/zk_p
 
 #### Refer
 
-- [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15) by [bbresearcher]()
+- [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15) by [bbresearcher](https://github.com/bbresearcher)
 
 ## 9. Informational: Missing validation for `timestamp`, `mstLevels` and `currenciesCount`
 
@@ -390,7 +389,7 @@ Likewise we would also need the following checks :
 
 #### Refer
 
-- [Review of the `Summa.sol` smart contract](https://github.com/zBlock-2/summa-solvency-diffie/issues/12) by [hrishibhat]()
+- [Review of the `Summa.sol` smart contract](https://github.com/zBlock-2/summa-solvency-diffie/issues/12) by [hrishibhat](https://github.com/hrishibhat)
 
 # Final remarks
 

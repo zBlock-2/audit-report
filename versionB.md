@@ -62,7 +62,6 @@ Auditors:
     - [5. Cargo Audit](#5-cargo-audit)
     - [6. Clippy](#6-clippy)
 
-
 # Protocol Summary
 
 _For a hgih-level overview of the Summa protocol, [see this](./README.md#overview-of-the-summa-proof-of-solvency-protocol)_.
@@ -188,7 +187,7 @@ A sniffer can see whether a user has a specific token because balance polynomial
 
 #### Refer
 
-- [The inclusion proof reveals whether a user holds a specific token](https://github.com/zBlock-2/summa-solvency/issues/21) by [qpzm]()
+- [The inclusion proof reveals whether a user holds a specific token](https://github.com/zBlock-2/summa-solvency/issues/21) by [qpzm](https://github.com/qpzm)
 
 ## 2. High: Incorrect verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`
 
@@ -198,7 +197,7 @@ This can lead to vkContracts with different permutation commitments from the cir
 
 #### Refer
 
-- [Wrong verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`](https://github.com/zBlock-2/summa-solvency/issues/10) by [obatirou]()
+- [Wrong verifying key contract permutation length can be considered valid by `validateVKPermutationsLength`](https://github.com/zBlock-2/summa-solvency/issues/10) by [obatirou](https://github.com/obatirou)
 
 ## 3. High: Fake user Inclusion Proof verified in contract
 
@@ -208,7 +207,7 @@ As all the cell values are zero, it might not be a critical issue in the CEX use
 
 #### Refer
 
-- [Fake user Inclusion Proof verified in contract](https://github.com/zBlock-2/summa-solvency/issues/9) by [rkdud007](), [qpzm]()
+- [Fake user Inclusion Proof verified in contract](https://github.com/zBlock-2/summa-solvency/issues/9) by [rkdud007](), [qpzm](https://github.com/qpzm)
 
 ## 4. High: Missing username range check in `big_intify_username` & `big_uint_to_fp`
 
@@ -230,9 +229,9 @@ We recommend that a range check is done inside the circuit or inside the smart c
 
 #### Refer
 
-- [Username overflow](https://github.com/zBlock-2/summa-solvency/issues/2) by [bbresearcher]()
-- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [bbresearcher]()
-- [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf]()
+- [Username overflow](https://github.com/zBlock-2/summa-solvency/issues/2) by [bbresearcher](https://github.com/bbresearcher)
+- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [bbresearcher](https://github.com/bbresearcher)
+- [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf](https://github.com/sebastiantf)
 
 ## Medium
 
@@ -256,7 +255,7 @@ Furthermore, [`verifyProof`](https://github.com/summa-dev/summa-solvency/blob/fe
 
 #### Refer
 
-- [The return value of `GrandSumVerifier` should be tested](https://github.com/zBlock-2/summa-solvency/issues/4) by [qpzm]()
+- [The return value of `GrandSumVerifier` should be tested](https://github.com/zBlock-2/summa-solvency/issues/4) by [qpzm](https://github.com/qpzm)
 
 ## Low
 
@@ -268,7 +267,7 @@ To Reproduce this, [change `balanceByteRange` to 9](https://github.com/summa-dev
 
 #### Refer
 
-- [Incorrect permutation length in `validateVKPermuationsLength`](https://github.com/zBlock-2/summa-solvency/issues/6) by [zeroqn]()
+- [Incorrect permutation length in `validateVKPermuationsLength`](https://github.com/zBlock-2/summa-solvency/issues/6) by [zeroqn](https://github.com/zeroqn)
 
 ## 2. Low: CSV parsing allows duplicate crypto tokens
 
@@ -293,7 +292,7 @@ Running the command `cargo run --release --example summa_solvency_flow` still ge
 
 #### Refer
 
-- [CSV parsing allows duplicate crypto tokens](https://github.com/zBlock-2/summa-solvency/issues/5) by [bbresearcher]()
+- [CSV parsing allows duplicate crypto tokens](https://github.com/zBlock-2/summa-solvency/issues/5) by [bbresearcher](https://github.com/bbresearcher)
 
 ## 3. Low: The return value of `GrandSumVerifier.verifyProof` isn't tested
 
@@ -319,13 +318,13 @@ This [test data](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead21
 2. user1 balance1
 ```
 
-The test result, however, shows that 4 balances break the range check. 
+The test result, however, shows that 4 balances break the range check.
 
 For example, user2 balance0 is zero, but the test error contains `Perform range check on balance 0 of user 2`. Refer to the assertion [here](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/src/circuits/tests.rs#L453-L484)
 
 #### Refer
 
-- [Range check tests are unreliable regarding the number of overflows](https://github.com/zBlock-2/summa-solvency/issues/3) by [qpzm]() , [pia]()
+- [Range check tests are unreliable regarding the number of overflows](https://github.com/zBlock-2/summa-solvency/issues/3) by [qpzm](https://github.com/qpzm) , [rkdud007](https://github.com/rkdud007)()
 
 ## Informational
 
@@ -374,7 +373,7 @@ The following sanity check `require(bytes(cryptocurrencies[i].chain).length <= c
 
 #### Refer
 
-- [Security concerns in `Summa.sol`](https://github.com/zBlock-2/summa-solvency/issues/23) by [hrishibhat]()
+- [Security concerns in `Summa.sol`](https://github.com/zBlock-2/summa-solvency/issues/23) by [hrishibhat](https://github.com/hrishibhat)
 
 ## 2. Informational: Update memory locations in verifiers to save gas
 
@@ -384,10 +383,9 @@ However, it can start from `0x180`.
 
 The maximum memory size used in both verifiers is `0x180`, so it is recommended to save constants from memory `0x180`. The saved memory is 160 and 128 bytes respectively.
 
-#### Refer 
+#### Refer
 
-- [Update memory locations in verifiers to save gas](https://github.com/zBlock-2/summa-solvency/issues/18) by [qpzm]() and [pia]()
-
+- [Update memory locations in verifiers to save gas](https://github.com/zBlock-2/summa-solvency/issues/18) by [qpzm](https://github.com/qpzm) and [rkdud007](https://github.com/rkdud007)()
 
 ## 3. Informational: Dynamic Errors not handled in Box of Errors for Function Results
 
@@ -395,15 +393,15 @@ When `Box` pointer is used on function returning a result, the underlying error 
 
 #### Refer
 
-- [Dynamic Errors not handled in Box of Errors for Function Results](https://github.com/zBlock-2/summa-solvency/issues/8) by [sachindkagrawal15]()
+- [Dynamic Errors not handled in Box of Errors for Function Results](https://github.com/zBlock-2/summa-solvency/issues/8) by [sachindkagrawal15](https://github.com/sachindkagrawal15)
 
 ## 4. Informational: Use of unwrap in core files and improper error handling
 
 Unwrap is usually a shortcut to bypass implementing proper error handling in Rust. Using Unwrap in production code is not recommended as it crashes the application & hides actual bugs. It is highly undesirable in core files and is a Rust bad practice. Proper error handling/transmission should be implemented.
 
-#### Refer 
+#### Refer
 
-- [Use of unwrap in core files and improper error handling](https://github.com/zBlock-2/summa-solvency/issues/7) by [sachindkagrawal15]()
+- [Use of unwrap in core files and improper error handling](https://github.com/zBlock-2/summa-solvency/issues/7) by [sachindkagrawal15](https://github.com/sachindkagrawal15)
 
 ## Final remarks
 
@@ -492,3 +490,6 @@ Highlighter works on a set of rules to look for error prone areas such as incorr
 ### 6. Clippy
 
 `clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/clippy/output.md).
+
+## B - Fuzzing
+
