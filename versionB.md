@@ -33,7 +33,6 @@ Auditors:
 - [Automated testing](#automated-testing)
   - [Automated Analysis](#automated-analysis)
   - [Fuzz Testing](#fuzz-testing)
-  - [Code Coverage](#code-coverage)
 - [Findings](#findings)
   - [Findings Explanation](#findings-explanation)
   - [High](#high)
