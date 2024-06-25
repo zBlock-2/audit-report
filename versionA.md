@@ -556,3 +556,24 @@ We raised the following pull requests to increase code coverage & emphasize on t
 - [PR#17](https://github.com/zBlock-2/summa-solvency-schneier/pull/17) to add end-to-end testing with full prover and verifier (instead of mock prover).
 - [PR#8](https://github.com/zBlock-2/summa-solvency-schneier/pull/8/files) to include cost estimation for circuits using `CircuitCost`
 - [PR#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5) is a stress test to determine the potential gas limits of `Summa::submitCommitment()`
+
+### [Methodology](#methodology)
+
+The audit employed a blend of automated tools and manual examination conducted by the fellows and residents. Techniques included detailed code reviews, static and dynamic analysis, fuzzing, and penetration testing to ensure a thorough validation of the protocol’s security measures.
+
+- **Tool Integration:**
+The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
+    - **Halo2-analyzer**: Verified all circuit constraints.
+    - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
+    - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
+- **Analytical Techniques:**
+The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
+    - **Static Analysis**: Examined the source code for vulnerabilities without execution.
+    - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+- **Expert Review:**
+We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
+- **Feedback and Improvements:**
+An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
+- **Documentation:**
+Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
+

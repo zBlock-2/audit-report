@@ -559,6 +559,23 @@ Fuzz testing, also known as fuzzing, is an automated testing technique used to d
 
 In the context of smart contracts, fuzz testing involves providing invalid, unexpected, or random data as inputs to the smart contract's functions to see how they behave under stress and to identify potential security vulnerabilities or unexpected behaviors.
 
+
+- **Tool Integration:**
+The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
+    - **Halo2-analyzer**: Verified all circuit constraints.
+    - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
+    - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
+- **Analytical Techniques:**
+The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
+    - **Static Analysis**: Examined the source code for vulnerabilities without execution.
+    - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+- **Expert Review:**
+We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
+- **Feedback and Improvements:**
+An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
+- **Documentation:**
+Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
+=======
 We used Foundry to generate fuzz tests for the smart contracts as specified in this [PR#1](https://github.com/zBlock-2/summa-solvency/pull/1/commits/2b3b3150835c7821fa62206b3b15ee9ebd1790c9#diff-fd578f7055e92d1627d1766c1de70e56e929946494bdd590cc146ad808e7e34f)
 
 ## C - Code Coverage
@@ -566,3 +583,4 @@ We used Foundry to generate fuzz tests for the smart contracts as specified in t
 We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage. Click [here](https://clang.llvm.org/docs/SourceBasedCodeCoverage.html#interpreting-reports) for information about interpreting this report.
 
 ![alt text](./assets/v2.png)
+
