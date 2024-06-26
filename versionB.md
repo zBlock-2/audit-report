@@ -4,7 +4,7 @@ Auditors:
 
 - [0xkarl98](https://github.com/0xkarl98)
 - [0xpanicError](https://github.com/0xpanicError)
-- [bbresearcher](https://github.com/bbresearcher)
+- [parsely](https://github.com/bbresearcher)
 - [flyingnobita](https://github.com/flyingnobita)
 - [hrishibhat](https://github.com/hrishibhat)
 - [igorline](https://github.com/igorline)
@@ -272,8 +272,8 @@ We recommend that a range check is done inside the circuit or inside the smart c
 
 #### Refer
 
-- [Username overflow](https://github.com/zBlock-2/summa-solvency/issues/2) by [bbresearcher](https://github.com/bbresearcher)
-- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [bbresearcher](https://github.com/bbresearcher)
+- [Username overflow](https://github.com/zBlock-2/summa-solvency/issues/2) by [parsely](https://github.com/bbresearcher)
+- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [parsely](https://github.com/bbresearcher)
 - [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf](https://github.com/sebastiantf)
 
 ## Medium
@@ -335,7 +335,7 @@ Running the command `cargo run --release --example summa_solvency_flow` still ge
 
 #### Refer
 
-- [CSV parsing allows duplicate crypto tokens](https://github.com/zBlock-2/summa-solvency/issues/5) by [bbresearcher](https://github.com/bbresearcher)
+- [CSV parsing allows duplicate crypto tokens](https://github.com/zBlock-2/summa-solvency/issues/5) by [parsely](https://github.com/bbresearcher)
 
 ## 3. Low: The return value of `GrandSumVerifier.verifyProof` isn't tested
 
