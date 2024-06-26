@@ -4,7 +4,7 @@ Auditors:
 
 - [0xKarl98](https://github.com/0xKarl98)
 - [0xpanicError](https://github.com/0xpanicError)
-- [bbresearcher](https://github.com/bbresearcher)
+- [parsely](https://github.com/bbresearcher)
 - [flyingnobita](https://github.com/flyingnobita)
 - [hrishibhat](https://github.com/hrishibhat)
 - [igorline](https://github.com/igorline)
@@ -287,7 +287,7 @@ In the code [here](https://github.com/summa-dev/summa-solvency/blob/master/zk_pr
 
 #### Refer
 
-- [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17) by [bbresearcher](https://github.com/bbresearcher)
+- [Mixed endian usage in code](https://github.com/zBlock-2/summa-solvency-diffie/issues/17) by [parsely](https://github.com/bbresearcher)
 
 ## Informational
 
@@ -372,7 +372,7 @@ The [Poseidon chip](https://github.com/summa-dev/summa-solvency/blob/master/zk_p
 
 #### Refer
 
-- [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15) by [bbresearcher](https://github.com/bbresearcher)
+- [Magic numbers used in code of MST Circuit to create PoseidonChip](https://github.com/zBlock-2/summa-solvency-diffie/issues/15) by [parsely](https://github.com/bbresearcher)
 
 ## 9. Informational: Missing validation for `timestamp`, `mstLevels` and `currenciesCount`
 
