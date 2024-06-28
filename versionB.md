@@ -77,19 +77,17 @@ From the users point of view, they only see a promise from the centralized entit
 
 Summa takes an approach that focuses on binding the custodian to a certain claim about the sum of their liabilities to their users, and subsequently leveraging zero-knowledge and cryptographic primitives to prove that the assets under their control are equal or exceed that sum of liabilities. In other words, rather than focusing on proving reserves, as in "we the entity control the private key(s) of wallets holding the pooled deposits of users", Summa focuses on binding liabilities, as in "we the entity prove to each user that their balance is included in calculating a grand sum of all liabilities, and we prove control of wallets that contain funds equal or exceeding that aggregated balance of liabilities".
 
-Summa’s 2-sided mechanism that overall provides a proof of solvency of an entity provides two useful proofs:
+Summa’s two-sided mechanism that overall provides a proof of solvency of an entity provides two useful proofs:
 
-(a) **Proof of grand sums**: the centralized entity submits a public cryptographic [commitment](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/contracts/src/Summa.sol#L144) clamining the sum of each asset in wallets it controls is greater than or equal a _claimed_ total sum of _liabilities_ to its users in that asset. In the KZG-based Version B of the protocol, a [proof is attached](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230) to the commitment attesting it was calculated correctly.
+(a) **Proof of grand sums**: the centralized entity submits a public cryptographic [commitment](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/contracts/src/Summa.sol#L144) claiming the sum of each asset in wallets it controls is greater than or equal a _claimed_ total sum of _liabilities_ to its users in that asset. In the KZG-based Version B of the protocol, a [proof is attached](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230) to the commitment attesting it was calculated correctly.
 
-
-
-(b) **Inclusion proofs**: Multiple proofs to users, one for each user, that their exact balances were included in the calculation of the grand sum. The more users verify their individual proof of inclusion of their exact balances of each asset (a proof which is cryptographically tied to the overall proof in (a)), the more confidence there is that the *claimed* total of liabilities used in (a) was truthful, thereby proving the solvency of the entity overall.
+(b) **Inclusion proofs**: Multiple proofs to users, one for each user, that their exact balances were included in the calculation of the grand sum. The more users verify their individual proof of inclusion of their exact balances of each asset (a proof which is cryptographically tied to the overall proof in (a)), the more confidence there is that the _claimed_ total of liabilities used in (a) was truthful, thereby proving the solvency of the entity overall.
 
 The more users verify their proof of inclusion in (b) the more trust the public at large can put in the proof of grand sums in (a). A custodian may incentivise wide verification of inclusion by users through the use of lottery where in each round of verification, say weekly or monthly, certain users are selected randomly to win a monetary reward.
 
 ![summa workflow](./assets/summa-workflow.png?raw=true)
 
-Figure 1: General flow of the Summa protocol in both variants, *credit: [Enrico - Summa tech lead](https://docs.google.com/presentation/d/1xUcH8geMz6I1iD9Jx0kWsIZvUcVlii5Us3mM4Mb3HNg/edit#slide=id.p3)*
+Figure 1: General flow of the Summa protocol in both variants, _credit: [Enrico - Summa tech lead](https://docs.google.com/presentation/d/1xUcH8geMz6I1iD9Jx0kWsIZvUcVlii5Us3mM4Mb3HNg/edit#slide=id.p3)_
 
 The proof in (a) further represents a trap-door commitment vis-a-vis the user who will verify their individual inclusion proofs against it. The zkSNARKs bring two benefits:
 
@@ -97,7 +95,6 @@ The proof in (a) further represents a trap-door commitment vis-a-vis the user wh
 - **Validity** of the computation of aggregated balances.
 
 The core of Summa protocol has been implemented in two variants that use different cryptographic primitives to generate the aforementioned proofs. However, the overall flow of the protocol (Figure 1) and assumptions and guarantees on security and privacy remain the same in both variants.
-
 
 ## Overview of the KZG-based Implementation of Summa Solvency (Version B)
 
@@ -140,7 +137,10 @@ The security audit of the Summa Proof of Solvency protocol encompassed a compreh
 The audit employed a blend of automated tools and manual examination conducted by the fellows and residents. Techniques included detailed code reviews, static and dynamic analysis, fuzzing, and penetration testing to ensure a thorough validation of the protocol’s security measures.
 
 - **Tool Integration:**
-  The audit utilized several specialized tools, each tailored to assess different aspects of the protocol: - **Halo2-analyzer**: Verified all circuit constraints. - **Polyexen-demo**: Standardized circuit formats for clarity and reusability. - **Highlighter**: Identified potential code issues needing closer examination. - **NPM and Cargo Audits**: Checked dependencies for known vulnerabilities. - **Clippy**: Ensured Rust code quality and best practices.
+  The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
+  - **Halo2-analyzer**: Verified all circuit constraints.
+  - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
+  - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
 - **Analytical Techniques:**
   The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment: - **Static Analysis**: Examined the source code for vulnerabilities without execution. - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
 - **Expert Review:**
@@ -162,11 +162,11 @@ yAcademy and the auditors make no warranties regarding the security of the code 
 
 | Category                 | Mark    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mathematics              | Good    | No heavy mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Mathematics              | Good    | No significant mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Complexity               | Good    | The code is easy to understand and closely follows the specification                                                                                                                                                                                                                                                                                                                                                                                     |
-| Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier) which is not recommended in production                                                                                                       |
+| Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs), and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier), which is not recommended for production                                                                                                       |
 | Cryptography             | Good    | The codebase extensively relies on the binding & hiding properties of KZG Commitment Scheme. However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                          |
-| Code stability           | Good    | The code was reviewed at a specific commit. The code did not changed during the review. Moreover, it is not likely to change significantly with the addition of features or updates                                                                                                                                                                                                                                                                      |
+| Code stability           | Good    | The code was reviewed at a specific commit. The code did not change during the review. Moreover, it is not likely to change significantly with the addition of features or updates                                                                                                                                                                                                                                                                      |
 | Documentation            | Good    | Summa codebase comprises a centralized and up-to-date [Gitbook documentation](https://summa.gitbook.io/summa). However, we recommend aggregating the limitations and the attack vectors of the Summa Protocol in the documentation.                                                                                                                                                                                                                      |
 | Monitoring               | N/A     | The protocol is intended to be integrated by other systems or dApps which will be responsible for the monitoring                                                                                                                                                                                                                                                                                                                                         |
 | Testing and verification | Average | The protocol contains only a few tests for the circuits. It is recommended to add more tests to increase the test coverage. When it comes to circuits, we believe it is necessary to develop an adversarial testing process, especially focused on malicious prover behavior. We also recommend fuzz testing and incorporating tools we used in [Automated Testing](#automated-testing) in Summa's software development lifecycle to produce secure code |
@@ -205,7 +205,7 @@ We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate 
 Findings are broken down into sections by their respective Impact:
 
 - Critical, High, Medium, Low Impact
-  - These are findings that range from attacks that may cause loss of funds, a break in the soundness, zero-knowledge, completeness of the system, proof malleability, or cause any unintended consequences/actions that are outside the scope of the requirements
+  - These findings range from attacks that may cause loss of funds, a break in the soundness, zero-knowledge, or completeness of the system, proof malleability, or any unintended consequences/actions that are outside the scope of the requirements
 - Informational
   - Findings including Recommendations and best practices
 
@@ -381,12 +381,12 @@ function submitCommitment(
     uint256 timestamp // @audit : Future timestamp can be used. This can be used to manipulate
 ```
 
-`timestamp` is expected to be time at which the exchange has taken snapshot of all the balances but this `timestamp` is not validated. As this can be set to a future timestamp. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes:
+`timestamp` is expected to be time at which the exchange has taken snapshot of all the balances but the `timestamp` is not validated. As this can be set to a future timestamp. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes:
 
 - Inconsistencies/confusion by not maintaining a chronological order in the commitment.
 - Delaying the proof verification by promising a future commitment.
 
-To mitigate this, add the following vallidation checks to timestamp :
+To mitigate this, add the following vallidation checks to the timestamp :
 
 - Add a check to make sure the timestamp is not in the future.
 - Store the last submitted timestamp and check the new timestamp is larger than the previous timestamp.
@@ -460,10 +460,10 @@ Using `abi.encodePacked()` reduces deployments gas from 1961848 to 1915414 as de
 - The Summa Solvency Protocol assumes that :
   - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
   - The KZG commitment scheme is completely binding & hiding with homomorphic properties
-- Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who donot verify their inclusion proofs.
+- Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who do not verify their inclusion proofs.
 - The library used for trusted setup - [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) is unaudited & it's contents are unreliable as there is no checksum available to validate its contents
 - The security of the circuit depends on the security of the cryptographic primitives such as KZG Commitments. Some of the known pitfalls of KZG include :
-  - Usage of small order elements leading to compromised security
+  - The usage of small order elements leading to compromised security
   - Recovery of polynomials using Polynomial interpolation when all t+1 points are exposed
 - Overall, the code demonstrates good implementation of mathematical operations and basic functionality. However, it could benefit from more extensive documentation, testing and additional tools such as [polyexen](https://github.com/zBlock-2/summa-solvency-diffie/pull/5) to view cell data.
 
@@ -479,7 +479,7 @@ Halo2-analyzer / Korrekt employs a Satisfiability Modulo Theories (SMT) solver t
 - **Unused Column -** Check that every column occurs in some polynomial.
 - **Unconstrained Cell -** Check that for every assigned cell in the region, it occurs in a polynomial which is not identically zero over this region. This means that part of the witness is not constrained -- this is almost certainly a bug.
 
-We used halo2-analyzer to search for unused gates, underconstrained cells and unused columns in the circuits. Here are the results :
+We used halo2-analyzer to search for unused gates, unconstrained cells and unused columns in the circuits. Here are the results :
 
 #### 1. Unused Gate
 
@@ -500,7 +500,7 @@ unused column: Column { index: 1, column_type: Advice }
 
 - This is due to the balances being 0. Hence, a false positive.
 
-#### 3. Underconstrained Cells
+#### 3. Unconstrained Cells
 
 ```bash
 Finished analysis: 12 unconstrained cells found.
@@ -559,23 +559,6 @@ Fuzz testing, also known as fuzzing, is an automated testing technique used to d
 
 In the context of smart contracts, fuzz testing involves providing invalid, unexpected, or random data as inputs to the smart contract's functions to see how they behave under stress and to identify potential security vulnerabilities or unexpected behaviors.
 
-
-- **Tool Integration:**
-The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
-    - **Halo2-analyzer**: Verified all circuit constraints.
-    - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
-    - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
-- **Analytical Techniques:**
-The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
-    - **Static Analysis**: Examined the source code for vulnerabilities without execution.
-    - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
-- **Expert Review:**
-We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
-- **Feedback and Improvements:**
-An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
-- **Documentation:**
-Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
-=======
 We used Foundry to generate fuzz tests for the smart contracts as specified in this [PR#1](https://github.com/zBlock-2/summa-solvency/pull/1/commits/2b3b3150835c7821fa62206b3b15ee9ebd1790c9#diff-fd578f7055e92d1627d1766c1de70e56e929946494bdd590cc146ad808e7e34f)
 
 ## C - Code Coverage
@@ -583,4 +566,3 @@ We used Foundry to generate fuzz tests for the smart contracts as specified in t
 We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate LLVM source-based code coverage. Click [here](https://clang.llvm.org/docs/SourceBasedCodeCoverage.html#interpreting-reports) for information about interpreting this report.
 
 ![alt text](./assets/v2.png)
-
