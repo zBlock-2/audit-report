@@ -10,7 +10,7 @@ Auditors:
 - [igorline](https://github.com/igorline)
 - [irnb](https://github.com/irnb)
 - [kiseln](https://github.com/kiseln)
-- [nullity00](https://github.com/nullity00)
+- [nullity](https://github.com/nullity00)
 - [obatirou](https://github.com/obatirou)
 - [qpzm](https://github.com/qpzm)
 - [rkdud007](https://github.com/rkdud007)
