@@ -2,9 +2,9 @@
 
 ![](./assets/cross.png)
 
-A collective of fellows and yAcademy ZK Resident auditors engaged with the Summa team over a 14-week period to perform a security review of the Summa protocol in both of its variants. The engagement involved protocol and codebase overview sessions, office hour sessions, async discussions, theory and implementation puzzles, bounties, and other buzzing activities throughout this 2nd ZK Auditing fellowship by yAcademy.
+A collective of fellows and yAcademy ZK Resident auditors engaged with the Summa team over a 14-week period to perform a security review of the Summa protocol in both of its variants. The engagement involved protocol and codebase overview sessions, office hour sessions, asynchronous discussions, theoretical and implementation puzzles, bounties, and other buzzing activities throughout this 2nd ZK Auditing fellowship by yAcademy.
 
-### Here's the report for 
+### Here's the report for
 
 - [Version A of the Summa protocol](./versionA.md)
 - [Version B of the Summa protocol](./versionB.md)

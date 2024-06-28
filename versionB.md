@@ -268,7 +268,7 @@ pub fn big_uint_to_fp(big_uint: &BigUint) -> Fp {
 
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
-We recommend that a range check is done inside the circuit or inside the smart contract. The range checks are to ensure that all usernames were less than the snark scalar field order so two users don't end up with the same identity in the Merkle sum tree
+We recommend that a range check is done inside the circuit or inside the smart contract. The range checks are to ensure that all usernames were less than the snark scalar field order so two users don't end up with the same identity in the polynomial.
 
 #### Refer
 

@@ -41,7 +41,7 @@ Auditors:
   - [Findings Explanation](#findings-explanation)
   - [High](#high)
     - [1. High: Missing username range check in `big_intify_username` \& `big_uint_to_fp`](#1-high-missing-username-range-check-in-big_intify_username--big_uint_to_fp)
-    - [2. High: Sum balance overflow](#2-high-sum-balance-overflow)
+    - [2. High: Sum Balance Overflow](#2-high-sum-balance-overflow)
     - [3. High: Inconsistency in range checks](#3-high-inconsistency-in-range-checks)
   - [Low](#low)
     - [1. Low: Mixed endian usage in code](#1-low-mixed-endian-usage-in-code)
@@ -72,34 +72,32 @@ Auditors:
 
 Blockchain technology can facilitate uncensorable and self-sovereign control of one’s assets. Users nonetheless regularly transfer ownership of their assets to centralized entities for various needs, chief among which is trading of cryptocurrencies and the on/off-ramping of fiat. Such centralized entities may themselves and in turn transfer ownership to secondary specialized custodian entities or other service providers such as investment funds. Unfortunately, such centralized control and handling of user funds can lead to catastrophic situations such as the mishandling of private keys which may lead to internal or external hacks, or the outright misuse of funds for trading or for use as collateral to access capital -which can result in liquidations in extreme market conditions.
 
-From the users point of view, they only see a promise from the centralized entity that they hold their funds. But this only represents entries in an accounting database, and may or may not reflect the state of wallets that are under the control of the centralized entity. The perennial question is: are all user funds available and liquid for immediate withdrawal at a given moment in time?
+From the user's point of view, they only see a promise from the centralized entity that they hold their funds. But this only represents entries in an accounting database, and may or may not reflect the state of wallets that are under the control of the centralized entity. The perennial question is: are all user funds available and liquid for immediate withdrawal at a given moment in time?
 
 Summa takes an approach that focuses on binding the custodian to a certain claim about the sum of their liabilities to their users, and subsequently leveraging zero-knowledge and cryptographic primitives to prove that the assets under their control are equal or exceed that sum of liabilities. In other words, rather than focusing on proving reserves, as in "we the entity control the private key(s) of wallets holding the pooled deposits of users", Summa focuses on binding liabilities, as in "we the entity prove to each user that their balance is included in calculating a grand sum of all liabilities, and we prove control of wallets that contain funds equal or exceeding that aggregated balance of liabilities".
 
 Summa’s 2-sided mechanism that overall provides a proof of solvency of an entity provides two useful proofs:
 
-(a) **Proof of grand sums**: the centralized entity submits a public cryptographic [commitment](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/contracts/src/Summa.sol#L144) clamining the sum of each asset in wallets it controls is greater than or equal a _claimed_ total sum of _liabilities_ to its users in that asset. In the KZG-based Version B of the protocol, a [proof is attached](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230) to the commitment attesting it was calculated correctly.
+(a) **Proof of grand sums**: the centralized entity submits a public cryptographic [commitment](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/contracts/src/Summa.sol#L144) claiming the sum of each asset in wallets it controls is greater than or equal a _claimed_ total sum of _liabilities_ to its users in that asset. In the KZG-based Version B of the protocol, a [proof is attached](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/contracts/src/Summa.sol#L230) to the commitment attesting it was calculated correctly.
 
-
-
-(b) **Inclusion proofs**: Multiple proofs to users, one for each user, that their exact balances were included in the calculation of the grand sum. The more users verify their individual proof of inclusion of their exact balances of each asset (a proof which is cryptographically tied to the overall proof in (a)), the more confidence there is that the *claimed* total of liabilities used in (a) was truthful, thereby proving the solvency of the entity overall.
+(b) **Inclusion proofs**: Multiple proofs to users, one for each user, that their exact balances were included in the calculation of the grand sum. The more users verify their individual proof of inclusion of their exact balances of each asset (a proof which is cryptographically tied to the overall proof in (a)), the more confidence there is that the _claimed_ total of liabilities used in (a) was truthful, thereby proving the solvency of the entity overall.
 
 The more users verify their proof of inclusion in (b) the more trust the public at large can put in the proof of grand sums in (a). A custodian may incentivise wide verification of inclusion by users through the use of lottery where in each round of verification, say weekly or monthly, certain users are selected randomly to win a monetary reward.
 
 ![summa workflow](./assets/summa-workflow.png?raw=true)
 
-Figure 1: General flow of the Summa protocol in both variants, *credit: [Enrico - Summa tech lead](https://docs.google.com/presentation/d/1xUcH8geMz6I1iD9Jx0kWsIZvUcVlii5Us3mM4Mb3HNg/edit#slide=id.p3)*
+Figure 1: General flow of the Summa protocol in both variants, _credit: [Enrico - Summa tech lead](https://docs.google.com/presentation/d/1xUcH8geMz6I1iD9Jx0kWsIZvUcVlii5Us3mM4Mb3HNg/edit#slide=id.p3)_
 
-The proof in (a) further represents a trap-door commitment vis-a-vis the user who will verify their individual inclusion proofs against it. The zkSNARKs bring two benefits:
+The proof in (a) further represents a trap-door commitment vis-à-vis the user who will verify their individual inclusion proofs against it. The zkSNARKs bring two benefits:
 
 - **Privacy** against the leakage of user data. In verifying proofs of grand sums, the public input are the leaf and root hashes.
 - **Validity** of the computation of aggregated balances.
 
 The core of Summa protocol has been implemented in two variants that use different cryptographic primitives to generate the aforementioned proofs. However, the overall flow of the protocol (Figure 1) and assumptions and guarantees on security and privacy remain the same in both variants.
 
-## Overview of the MST-based implementation of Summa Solvency (Version A)
+## Overview of the MST-based Implementation of Summa Solvency (Version A)
 
-The core object in this version of the protocol is a Merkle sum tree (MST). Nodes in the tree all have two elements: a `hash`, and an array of `balances[b0, b1, .., bN]` where `N` is a global constant hardcoded to each instantiation of the protocol. In leaf nodes, the hash is `H(user_id_transposed_into_a_field_element, [balances])` , while in middle nodes and the root, the hash is `H([balances], left_child_hash, right_child_hash)`. A balance b_i in a leaf node represents a user’s balance of the `i-th` currency, while in a non-leave node in the tree it represents the aggregated sum of the `i-th` currency in all leaves that are descendants of said inner (or root) node. The ZK-friendly Poseidon hash function is used.
+The core object in this version of the protocol is a Merkle sum tree (MST). Nodes in the tree all have two elements: a `hash`, and an array of `balances[b0, b1, .., bN]` where `N` is a global constant hardcoded to each instantiation of the protocol. In leaf nodes, the hash is `H(user_id_transposed_into_a_field_element, [balances])`, while in middle nodes and the root, the hash is `H([balances], left_child_hash, right_child_hash)`. A balance b_i in a leaf node represents a user’s balance of the `i-th` currency, while in a non-leaf node in the tree it represents the aggregated sum of the `i-th` currency in all leaves that are descendants of said inner (or root) node. The ZK-friendly Poseidon hash function is used.
 
 ![mst in summa version a](./assets/mst.png?raw=true)
 
@@ -113,7 +111,7 @@ What is proven in-circuit by the entity are:
 - The arithmetic of summation is valid
 - The hash function is computed correctly
 
-Each balance is range-checked in-circuit to a ceiling such that summing N users cannot possibly exceed the prime, with N being a safe maximum. The larger the ceiling the higher the prover cost (due to more decompositions during range-check). In summa, balances are range-checked to be ≤ 64 bits which are large enough for typical cryptocurrency balances while small enough to guarantee the summation of billions of users `N` cannot possibly overflow the much larger prime.
+Each balance is range-checked in-circuit to a ceiling such that summing N users cannot possibly exceed the prime, with N being a safe maximum. The larger the ceiling the higher the prover cost (due to more decompositions during range-check). In Summa, balances are range-checked to be ≤ 64 bits which are large enough for typical cryptocurrency balances while small enough to guarantee the summation of billions of users `N` cannot possibly overflow the much larger prime.
 
 # Scope
 
@@ -138,7 +136,7 @@ The security audit of the Summa Proof of Solvency protocol encompassed a compreh
   - `/backend/*`
 - **Excluded**:
   - `/contracts/src/InclusionVerifier.sol`
-  - examples related to nova experiments
+  - Examples related to Nova experiments
   - `/src/circom/*`
 
 ### Methodology
@@ -160,22 +158,22 @@ After the findings were presented to the Summa team, fixes were made and include
 
 This code review is for identifying potential vulnerabilities in the code. The reviewers did not investigate security practices or operational security and assumed that privileged parties could be trusted. The reviewers did not evaluate the security of the code relative to a standard or specification. The review may not have identified all potential attack vectors or areas of vulnerability.
 
-yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent nor imply to third parties that the code has been audited nor that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
+yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent nor imply to third parties that the code has been audited or that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
 
 ## Code Evaluation Matrix
 
 ---
 
-| Category                 | Mark    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mathematics              | Good    | No heavy mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Complexity               | Good    | The code is easy to understand and closely follows the specification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier) which is not recommended in production                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Cryptography             | Good    | Merkle Sum Trees inherit strong cryptographic properties from the hash functions used. Here, the codebase makes use of the Poseidon hash function known for its efficiency, zk-friendliness, and resistance against various cryptanalytic attacks. Even with a change in it's magic numbers, the hash function yields a security of `127 bits`. However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                                                                                                                                                     |
-| Code stability           | Good    | The code was reviewed at a specific commit. The code did not changed during the review. Moreover, it is not likely to change significantly with the addition of features or updates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| Documentation            | Good    | Summa codebase comprises a centralized and up-to-date [Gitbook documentation](https://summa.gitbook.io/summa/v/1). However, we recommend aggregating the limitations and the attack vectors of the Summa Protocol in the documentation. We found only one descrepency with regards to the documentation here [Informational#2](#2-informational-inclusionverifieryulnot-generated).                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| Monitoring               | N/A     | The protocol is intended to be integrated by other systems or dApps which will be responsible for the monitoring                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| Testing and verification | Average | The protocol contains only a few tests for the circuits. It is recommended to add more tests to increase the test coverage. When it comes to circuits, we believe it is necessary to develop an adversarial testing process, especially focused on malicious prover behavior. We raised the following PRs to increase code coverage & emphasize on testing - [#3](https://github.com/zBlock-2/summa-solvency-diffie/pull/3), [#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5), [#8](https://github.com/zBlock-2/summa-solvency-schneier/pull/8/files), [#17](https://github.com/zBlock-2/summa-solvency-schneier/pull/17). We also recommend [fuzz testing](#fuzz-testing) and incorporating tools we used in [Automated Testing](#automated-testing) in Summa's software development lifecycle to produce secure code |
+| Category                 | Mark    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mathematics              | Good    | No significant mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Complexity               | Good    | The code is easy to understand and closely follow the specification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs), and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier), which is not recommended for production                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Cryptography             | Good    | Merkle Sum Trees inherit strong cryptographic properties from the hash functions used. Here, the codebase makes use of the Poseidon hash function known for its efficiency, zk-friendliness, and resistance against various cryptanalytic attacks. Even with a change in its magic numbers, the hash function yields a security of `127 bits`. However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                                                                                                                                                   |
+| Code stability           | Good    | The code was reviewed at a specific commit. The code did not change during the review. Moreover, it is not likely to change significantly with addition of features or updates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Documentation            | Good    | Summa codebase comprises a centralized and up-to-date [Gitbook documentation](https://summa.gitbook.io/summa/v/1). However, we recommend aggregating the limitations and the attack vectors of the Summa Protocol in the documentation. We found only one discrepancy with regards to the documentation here [Informational#2](#2-informational-inclusionverifieryulnot-generated).                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Monitoring               | N/A     | The protocol is intended to be integrated by other systems or dApps which will be responsible for the monitoring                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Testing and verification | Average | The protocol contains only a few tests for the circuits. It is recommended to add more tests to increase the test coverage. When it comes to circuits, we believe it is necessary to develop an adversarial testing process, especially focused on malicious prover behavior. We raised the following PRs to increase code coverage & emphasize testing - [#3](https://github.com/zBlock-2/summa-solvency-diffie/pull/3), [#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5), [#8](https://github.com/zBlock-2/summa-solvency-schneier/pull/8/files), [#17](https://github.com/zBlock-2/summa-solvency-schneier/pull/17). We also recommend [fuzz testing](#fuzz-testing) and incorporating tools we used in [Automated Testing](#automated-testing) in Summa's software development lifecycle to produce secure code |
 
 # Automated Testing
 
@@ -213,7 +211,7 @@ We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate 
 Findings are broken down into sections by their respective Impact:
 
 - Critical, High, Medium, Low Impact
-  - These are findings that range from attacks that may cause loss of funds, a break in the soundness, zero-knowledge, completeness of the system, proof malleability, or cause any unintended consequences/actions that are outside the scope of the requirements
+  - These findings range from attacks that may cause loss of funds, a break in the soundness, zero-knowledge, or completeness of the system, proof malleability, or any unintended consequences/actions that are outside the scope of the requirements
 - Informational
   - Findings including Recommendations and best practices
 
@@ -237,14 +235,14 @@ pub fn big_uint_to_fp(big_uint: &BigUint) -> Fp {
 
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
-We recommend that a range check is done inside the circuit or inside the smart contract. The range checks are to ensure that all usernames were less than the snark scalar field order so two users don't end up with the same identity in the Merkle sum tree
+We recommend that a range check is done inside the circuit or inside the smart contract. The range checks are to ensure that all usernames are less than the SNARK scalar field order so that two users don't end up with the same identity in the Merkle sum tree
 
 #### Refer
 
 - [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf](https://github.com/sebastiantf)
 - [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [parsley]()
 
-## 2. High: Sum balance overflow
+## 2. High: Sum Balance Overflow
 
 The lack of in-circuit range check for the sum of balances posesses a risk of overflow. Since `N_BYTES` is not exposed in the contract, users must run `examples/gen_inclusion_verifier.rs` to obtain a warning message about the risk of overflow when `N_BYTES` is set to 32.
 
@@ -293,7 +291,7 @@ In the code [here](https://github.com/summa-dev/summa-solvency/blob/master/zk_pr
 
 ## 1. Informational: Range check uses `lookup_any` instead of lookup
 
-The [range check](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/zk_prover/src/chips/range/range_check.rs#L71) uses function `lookup_any` which was introduced in PSE fork to allow dynamic lookup by using a table expression. The table used for the range check do not change and is always the same: values from `0 to 2^8-1.` Hence a dynamic lookup is not necessary in this context. Usage of `lookup` should be preferred.
+The [range check](https://github.com/summa-dev/summa-solvency/blob/52373464b7ac4e76f7601cd51a10f84655ad387f/zk_prover/src/chips/range/range_check.rs#L71) uses function `lookup_any` which was introduced in PSE fork to allow dynamic lookup by using a table expression. The table used for the range check do not change and is always the same: values from `0 to 2^8-1.` Hence, a dynamic lookup is not necessary in this context. The usage of `lookup` should be preferred.
 
 #### Refer
 
@@ -342,7 +340,7 @@ The hash calculation of the `cexAddress` at [Summa.sol#L117](https://github.com/
 The contracts `Summa.sol` does not implement a 2-Step-Process for transferring ownership.
 So ownership of the contract can easily be lost when making a mistake when transferring ownership.
 
-While the probability if this happening is highly unlikely, we recommend following the best security measures.
+While the probability of this happening is highly unlikely, we recommend following the best security measures.
 
 #### Refer
 
@@ -352,7 +350,7 @@ While the probability if this happening is highly unlikely, we recommend followi
 
 [`Summa::submitCommitment()`](https://github.com/zBlock-2/summa-solvency/blob/main/contracts/src/Summa.sol#L144) takes in two arrays and loops once over them. [`rootBalances`](https://github.com/zBlock-2/summa-solvency-schneier/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L146-L147) array contains the root balances of each cryptocurrency. [`cryptocurrencies`](https://github.com/zBlock-2/summa-solvency/blob/95d63fe1a55935542810138aa5d8de7f50f4e94b/contracts/src/Summa.sol#L159-L171) array contains details of each cryptocurrency: `name`, `chain`. There could be practical limitations to the number of `rootBalances` and `cryptocurrencies` that could be submitted in a single txn, imposed by block gas limits
 
-According to [Coingecko](https://www.coingecko.com/en/exchanges/binance), Binance hosts 376 cryptocurrencies. After a stress test in [PR#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5), it is known that 402 is the max no. of cryptocurrencies before overflowing 30M block gas limit. To compute proof of solvency for the entire state of the exchange at a given time, it might be necessary to split the submission into multiple commitments for the same `timestamp`.
+According to [Coingecko](https://www.coingecko.com/en/exchanges/binance), Binance hosts 376 cryptocurrencies. After a stress test in [PR#5](https://github.com/zBlock-2/summa-solvency-schneier/pull/5), it is known that 402 is the maximum number of cryptocurrencies before overflowing 30M block gas limit. To compute proof of solvency for the entire state of the exchange at a given time, it might be necessary to split the submission into multiple commitments for the same `timestamp`.
 
 #### Refer
 
@@ -384,14 +382,14 @@ The [Poseidon chip](https://github.com/summa-dev/summa-solvency/blob/master/zk_p
         uint256 timestamp // @audit : Future timestamp can be used. This can be used to manipulate
 ```
 
-`timestamp` is expected to be time at which the exchange has taken snapshot of all the balances but this `timestamp` is not validated. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes:
+`timestamp` is expected to be the time at which the exchange has taken snapshot of all the balances but this `timestamp` is not validated. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes.
 
 - Inconsistencies/confusion by not maintaining a chronological order in the commitment.
 - Delaying the proof verification by promising a future commitment.
 
-To mitigate this add the following vallidation checks to timestamp :
+To mitigate this, add the following validation checks to the timestamp :
 
-- Add a check to make sure the timestamp is not in the future.
+- Add a check to ensure the timestamp is not in the future.
 - Store the last submitted timestamp and check the new timestamp is larger than the previous timestamp.
 
 ```diff
@@ -422,9 +420,9 @@ Likewise we would also need the following checks :
 # Final remarks
 
 - The Summa Solvency Protocol assumes that :
-    - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
-    - The Merkle Sum Tree is a cryptographic structure which inherits the security properties of the Poseidon hash function
-- Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who donot verify their inclusion proofs.
+  - Poseidon hash function is collision-resistant, resistant to differential, algebraic, and interpolation attacks.
+  - The Merkle Sum Tree is a cryptographic structure which inherits the security properties of the Poseidon hash function
+- Social engineering attacks are still a valid way to break the system. The custodian could omit a section of users who do not verify their inclusion proofs.
 - The library used for trusted setup - [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs) is unaudited & it's contents are unreliable as there is no checksum available to validate its contents
 - Overall, the code demonstrates good implementation of mathematical operations and basic functionality. However, it could benefit from more extensive documentation, testing and additional tools such as [polyexen](https://github.com/zBlock-2/summa-solvency-diffie/pull/5) to view cell data.
 
@@ -440,7 +438,7 @@ Halo2-analyzer / Korrekt employs a Satisfiability Modulo Theories (SMT) solver t
 - **Unused Column -** Check that every column occurs in some polynomial.
 - **Unconstrained Cell -** Check that for every assigned cell in the region, it occurs in a polynomial which is not identically zero over this region. This means that part of the witness is not constrained -- this is almost certainly a bug.
 
-We used halo2-analyzer to search for unused gates, underconstrained cells and unused columns in the circuits. Here are the results :
+We used halo2-analyzer to search for unused gates, unconstrained cells and unused columns in the circuits. Here are the results :
 
 1. Unused Gate
 
@@ -458,7 +456,7 @@ The gate [`partial rounds`](https://github.com/summa-dev/halo2/blob/main/halo2_g
 Finished analysis: 0 unused columns found.
 ```
 
-3. Underconstrained Cell
+3. Unconstrained Cell
 
 ```bash
 Finished analysis: 3566 unconstrained cells found.
@@ -497,7 +495,7 @@ unconstrained cell in "permute state" region: Column { index: 1, column_type: Ad
 unconstrained cell in "permute state" region: Column { index: 1, column_type: Advice } (rotation: 0) -- very likely a bug.
 ```
 
-Out of the `3566` underconstrained cells found, these are the common weaknesses pointed out :
+Out of the `3566` unconstrained cells found, these are the common weaknesses pointed out :
 
 - unconstrained cell in `"assign entry username"`, `"assign entry balance"`, `"assign sibling leaf node username"`, `"assign sibling leaf balance"`, `"assign sibling node balance"`, `"assign sibling left hash"`, `"assign sibling right hash"` regions. The `assign_value_to_witness` method from the `CircuitBase` trait is used to assign the values during synthesis. A malicious prover can tweak these values & construct a completely new subset of a Merkle tree. This is a known issue.
 
@@ -550,7 +548,7 @@ We used [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to generate 
 
 ![alt text](./assets/v1.png)
 
-We raised the following pull requests to increase code coverage & emphasize on testing.
+We raised the following pull requests to increase code coverage & emphasize testing.
 
 - [PR#3](https://github.com/zBlock-2/summa-solvency-diffie/pull/3) to increase code coverage for `merkle_sum_tree`
 - [PR#17](https://github.com/zBlock-2/summa-solvency-schneier/pull/17) to add end-to-end testing with full prover and verifier (instead of mock prover).
@@ -562,18 +560,12 @@ We raised the following pull requests to increase code coverage & emphasize on t
 The audit employed a blend of automated tools and manual examination conducted by the fellows and residents. Techniques included detailed code reviews, static and dynamic analysis, fuzzing, and penetration testing to ensure a thorough validation of the protocol’s security measures.
 
 - **Tool Integration:**
-The audit utilized several specialized tools, each tailored to assess different aspects of the protocol:
-    - **Halo2-analyzer**: Verified all circuit constraints.
-    - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
-    - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
+  The audit utilized several specialized tools, each tailored to assess different aspects of the protocol: - **Halo2-analyzer**: Verified all circuit constraints. - **Polyexen-demo**: Standardized circuit formats for clarity and reusability. - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
 - **Analytical Techniques:**
-The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
-    - **Static Analysis**: Examined the source code for vulnerabilities without execution.
-    - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+  The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment: - **Static Analysis**: Examined the source code for vulnerabilities without execution. - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
 - **Expert Review:**
-We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
+  We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
 - **Feedback and Improvements:**
-An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
+  An iterative feedback loop with the Summa’s development team allowed for the immediate addressing and re-evaluation of any issues found, ensuring all fixes were effectively implemented.
 - **Documentation:**
-Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
-
+  Each phase of the audit was thoroughly documented, with detailed reports on tool outputs, expert insights, and overall findings, culminating in a comprehensive final report that outlined vulnerabilities, impacts, and recommended actions.
