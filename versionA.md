@@ -245,7 +245,7 @@ We recommend that a range check is done inside the circuit or inside the smart c
 #### Refer
 
 - [Guarantee usernames stays inside field](https://github.com/zBlock-2/summa-solvency-schneier/issues/13) by [sebastiantf](https://github.com/sebastiantf)
-- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [parsley]()
+- [Possible Overflow in username in big_intify_username combined with calling big_uint_to_fp](https://github.com/zBlock-2/summa-solvency-diffie/issues/16) by [parsley](https://github.com/bbresearcher)
 
 ## 2. High: Sum Balance Overflow
 
@@ -338,7 +338,7 @@ The hash calculation of the `cexAddress` at [Summa.sol#L117](https://github.com/
 
 #### Refer
 
-- [`Summa.sol` : Issue with `submitProofOfAddressOwnership()`](https://github.com/zBlock-2/summa-solvency-schneier/issues/7) by [zzzuhaibmohd]()
+- [`Summa.sol` : Issue with `submitProofOfAddressOwnership()`](https://github.com/zBlock-2/summa-solvency-schneier/issues/7) by [zzzuhaibmohd](https://github.com/zzzuhaibmohd)
 
 ## 6. Informational: `Summa.sol` : Ownable: Does not implement 2-Step Process for transferring ownership
 
@@ -349,7 +349,7 @@ While the probability of this happening is highly unlikely, we recommend followi
 
 #### Refer
 
-- [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6) by [zzzuhaibmohd]()
+- [`Summa.sol` : Ownable: Does not implement 2-Step-Process for transferring ownership](https://github.com/zBlock-2/summa-solvency-schneier/issues/6) by [zzzuhaibmohd](https://github.com/zzzuhaibmohd)
 
 ## 7. Informational: Summa.sol : Potential `Summa::submitCommitment()` Gas limits
 

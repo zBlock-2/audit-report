@@ -252,7 +252,7 @@ As all the cell values are zero, it might not be a critical issue in the CEX use
 
 #### Refer
 
-- [Fake user Inclusion Proof verified in contract](https://github.com/zBlock-2/summa-solvency/issues/9) by [rkdud007](), [qpzm](https://github.com/qpzm)
+- [Fake user Inclusion Proof verified in contract](https://github.com/zBlock-2/summa-solvency/issues/9) by [rkdud007](https://github.com/rkdud007), [qpzm](https://github.com/qpzm)
 
 ## 4. High: Missing username range check in `big_intify_username` & `big_uint_to_fp`
 
