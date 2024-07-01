@@ -149,7 +149,9 @@ The audit employed a blend of automated tools and manual examination conducted b
   - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
   - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
 - **Analytical Techniques:**
-  The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment: - **Static Analysis**: Examined the source code for vulnerabilities without execution. - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+  The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
+  - **Static Analysis**: Examined the source code for vulnerabilities without execution.
+  - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
 - **Expert Review:**
   We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
 - **Feedback and Improvements:**
@@ -161,7 +163,7 @@ After the findings were presented to the Summa team, fixes were made and include
 
 This code review is for identifying potential vulnerabilities in the code. The reviewers did not investigate security practices or operational security and assumed that privileged parties could be trusted. The reviewers did not evaluate the security of the code relative to a standard or specification. The review may not have identified all potential attack vectors or areas of vulnerability.
 
-yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent nor imply to third parties that the code has been audited or that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
+yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent or imply to third parties that the code has been audited or that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
 
 ## Code Evaluation Matrix
 
@@ -170,7 +172,7 @@ yAcademy and the auditors make no warranties regarding the security of the code 
 | Category                 | Mark    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ------------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Mathematics              | Good    | No significant mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| Complexity               | Good    | The code is easy to understand and closely follows the specification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Complexity               | Good    | The code is easy to understand and closely follows the specification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs), and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier), which is not recommended for production                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Cryptography             | Good    | Merkle Sum Trees inherit strong cryptographic properties from the hash functions used. Here, the codebase makes use of the Poseidon hash function known for its efficiency, zk-friendliness, and resistance against various cryptanalytic attacks. Even with a change in its magic numbers, the hash function yields a security of `127 bits`. However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                                                                                                                                                   |
 | Code stability           | Good    | The code was reviewed at a specific commit. The code did not change during the review. Moreover, it is not likely to change significantly with addition of features or updates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -506,7 +508,7 @@ Out of the `3566` unconstrained cells found, these are the common weaknesses poi
 
 - `unconstrained cell in "permute state"` is a false positive which arises from the `permute state` region of the Poseidon Chip.
 
-Here’s the complete [report](https://github.com/zBlock-2/summa-report/blob/main/underconstrained_cells.md).
+Here’s the complete [report](./appendix/V1/Halo2-Analyzer/output.md).
 
 ### 2. Polyexen-demo
 
@@ -520,22 +522,22 @@ Polyexen (Polynomial Expression Engine) transforms circuits designed with the Ha
 
 We used polyexen-demo to debug the assignments & double check the constraints. Here’s the output :
 
-- Fixed Columns - [CSV](https://github.com/zBlock-2/summa-report/blob/main/mst_fixed.csv)
-- Lookup constraints - [mst_lookups.toml](https://github.com/zBlock-2/summa-report/blob/main/mst_lookups.toml)
-- Gate constraints - [mst_polys.toml](https://github.com/zBlock-2/summa-report/blob/main/mst_polys.toml)
-- Copy constraints - [mst.toml](https://github.com/zBlock-2/summa-report/blob/main/mst.toml)
+- Fixed Columns - [CSV](./appendix/V1/Polyexen/mst_fixed.csv)
+- Lookup constraints - [mst_lookups.toml](./appendix/V1/Polyexen/mst_lookups.toml)
+- Gate constraints - [mst_polys.toml](./appendix/V1/Polyexen/mst_polys.toml)
+- Copy constraints - [mst.toml](./appendix/V1/Polyexen/mst.toml)
 
 ### 3. NPM Audit
 
-`npm audit` scans your project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Node.js application secure by identifying and addressing potential risks in your packages. View the complete report of security vulnerabilities in the `contracts` package [here](https://github.com/zBlock-2/audit-report/blob/main/appendix/V1/npm-audit/output.md)
+`npm audit` scans your project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Node.js application secure by identifying and addressing potential risks in your packages. View the complete report of security vulnerabilities in the `contracts` package [here](./appendix/V1/npm-audit/output.md)
 
 ### 4. Cargo Audit
 
-`cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates. View the complete report of security vulnerabilities in `zk-prover` and `backend` [here](https://github.com/zBlock-2/audit-report/blob/main/appendix/V1/cargo-audit/output.md).
+`cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates. View the complete report of security vulnerabilities in `zk-prover` and `backend` [here](./appendix/V1/cargo-audit/output.md).
 
 ### 5. Clippy
 
-`clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V1/clippy/output.md).
+`clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](./appendix/V1/clippy/output.md).
 
 ## B - Fuzz Testing
 

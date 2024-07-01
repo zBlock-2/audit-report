@@ -73,7 +73,7 @@ Auditors:
 
 Blockchain technology can facilitate uncensorable and self-sovereign control of one’s assets. Users nonetheless regularly transfer ownership of their assets to centralized entities for various needs, chief among which is trading of cryptocurrencies and the on/off-ramping of fiat. Such centralized entities may themselves and in turn transfer ownership to secondary specialized custodian entities or other service providers such as investment funds. Unfortunately, such centralized control and handling of user funds can lead to catastrophic situations such as the mishandling of private keys which may lead to internal or external hacks, or the outright misuse of funds for trading or for use as collateral to access capital -which can result in liquidations in extreme market conditions.
 
-From the users point of view, they only see a promise from the centralized entity that they hold their funds. But this only represents entries in an accounting database, and may or may not reflect the state of wallets that are under the control of the centralized entity. The perennial question is: are all user funds available and liquid for immediate withdrawal at a given moment in time?
+From the user's point of view, they only see a promise from the centralized entity that they hold their funds. But this only represents entries in an accounting database, and may or may not reflect the state of wallets that are under the control of the centralized entity. The perennial question is: are all user funds available and liquid for immediate withdrawal at a given moment in time?
 
 Summa takes an approach that focuses on binding the custodian to a certain claim about the sum of their liabilities to their users, and subsequently leveraging zero-knowledge and cryptographic primitives to prove that the assets under their control are equal or exceed that sum of liabilities. In other words, rather than focusing on proving reserves, as in "we the entity control the private key(s) of wallets holding the pooled deposits of users", Summa focuses on binding liabilities, as in "we the entity prove to each user that their balance is included in calculating a grand sum of all liabilities, and we prove control of wallets that contain funds equal or exceeding that aggregated balance of liabilities".
 
@@ -89,7 +89,7 @@ The more users verify their proof of inclusion in (b) the more trust the public 
 
 Figure 1: General flow of the Summa protocol in both variants, _credit: [Enrico - Summa tech lead](https://docs.google.com/presentation/d/1xUcH8geMz6I1iD9Jx0kWsIZvUcVlii5Us3mM4Mb3HNg/edit#slide=id.p3)_
 
-The proof in (a) further represents a trap-door commitment vis-a-vis the user who will verify their individual inclusion proofs against it. The zkSNARKs bring two benefits:
+The proof in (a) further represents a trap-door commitment vis-à-vis the user who will verify their individual inclusion proofs against it. The zkSNARKs bring two benefits:
 
 - **Privacy** against the leakage of user data. In verifying proofs of grand sums, the public input are the leaf and root hashes.
 - **Validity** of the computation of aggregated balances.
@@ -129,7 +129,7 @@ The security audit of the Summa Proof of Solvency protocol encompassed a compreh
   - `/prover/*` excluding [amortized KZG opening approach](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/src/circuits/tests.rs#L31) and related code in [utils](https://github.com/summa-dev/summa-solvency/blob/fec83a747ead213261aecfaf4a01b43fff9731ee/prover/src/circuits/utils.rs#L236-L307)
 - **Excluded**:
   - `/contracts/src/InclusionVerifier.sol`
-  - examples related to nova experiments
+  - Examples related to nova Experiments
   - `/src/circom/*`
 
 ### Methodology
@@ -142,7 +142,9 @@ The audit employed a blend of automated tools and manual examination conducted b
   - **Polyexen-demo**: Standardized circuit formats for clarity and reusability.
   - **Misc Tools**: Utilized Highlighter to identify potential code issues, conducted NPM and Cargo Audits to check for vulnerabilities, and Clippy to ensure Rust code quality and best practices.
 - **Analytical Techniques:**
-  The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment: - **Static Analysis**: Examined the source code for vulnerabilities without execution. - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
+  The audit encompassed both static and dynamic analyses to provide a comprehensive security assessment:
+  - **Static Analysis**: Examined the source code for vulnerabilities without execution.
+  - **Dynamic Analysis**: Tested the protocol in operation to identify runtime issues.
 - **Expert Review:**
   We conducted in-depth manual reviews to evaluate complex components and integrations, providing a crucial layer of scrutiny beyond automated tools.
 - **Feedback and Improvements:**
@@ -154,7 +156,7 @@ After the findings were presented to the Summa team, fixes were made and include
 
 This code review is for identifying potential vulnerabilities in the code. The reviewers did not investigate security practices or operational security and assumed that privileged parties could be trusted. The reviewers did not evaluate the security of the code relative to a standard or specification. The review may not have identified all potential attack vectors or areas of vulnerability.
 
-yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent nor imply to third parties that the code has been audited nor that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
+yAcademy and the auditors make no warranties regarding the security of the code and do not warrant that the code is free from defects. yAcademy and the auditors do not represent or imply to third parties that the code has been audited nor that the code is free from defects. By deploying or using the code, Summa Solvency and users of the contracts/circuits agree to use the code at their own risk.
 
 ## Code Evaluation Matrix
 
@@ -162,11 +164,11 @@ yAcademy and the auditors make no warranties regarding the security of the code 
 
 | Category                 | Mark    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mathematics              | Good    | No significant mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Mathematics              | Good    | No significant mathematical components were involved                                                                                                                                                                                                                                                                                                                                                                                                     |
 | Complexity               | Good    | The code is easy to understand and closely follows the specification                                                                                                                                                                                                                                                                                                                                                                                     |
-| Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs), and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier), which is not recommended for production                                                                                                       |
+| Libraries                | Low     | Although no serious issues have been found in the dependencies, the codebase makes use of unaudited versions of [halo2](https://github.com/summa-dev/halo2) , [halo2-kzg-srs](https://github.com/han0110/halo2-kzg-srs), and [halo2-solidity-verifier](https://github.com/summa-dev/halo2-solidity-verifier), which is not recommended for production                                                                                                    |
 | Cryptography             | Good    | The codebase extensively relies on the binding & hiding properties of KZG Commitment Scheme. However, it's essential to note that cryptographic algorithms and functions are always subject to ongoing analysis, and new attacks or weaknesses may be discovered in the future.                                                                                                                                                                          |
-| Code stability           | Good    | The code was reviewed at a specific commit. The code did not change during the review. Moreover, it is not likely to change significantly with the addition of features or updates                                                                                                                                                                                                                                                                      |
+| Code stability           | Good    | The code was reviewed at a specific commit. The code did not change during the review. Moreover, it is not likely to change significantly with the addition of features or updates                                                                                                                                                                                                                                                                       |
 | Documentation            | Good    | Summa codebase comprises a centralized and up-to-date [Gitbook documentation](https://summa.gitbook.io/summa). However, we recommend aggregating the limitations and the attack vectors of the Summa Protocol in the documentation.                                                                                                                                                                                                                      |
 | Monitoring               | N/A     | The protocol is intended to be integrated by other systems or dApps which will be responsible for the monitoring                                                                                                                                                                                                                                                                                                                                         |
 | Testing and verification | Average | The protocol contains only a few tests for the circuits. It is recommended to add more tests to increase the test coverage. When it comes to circuits, we believe it is necessary to develop an adversarial testing process, especially focused on malicious prover behavior. We also recommend fuzz testing and incorporating tools we used in [Automated Testing](#automated-testing) in Summa's software development lifecycle to produce secure code |
@@ -268,7 +270,7 @@ pub fn big_uint_to_fp(big_uint: &BigUint) -> Fp {
 
 A malicious prover could create usernames that overflow if two users have the same balance thus they can exclude one of the records from the data.
 
-We recommend that a range check is done inside the circuit or inside the smart contract. The range checks are to ensure that all usernames were less than the snark scalar field order so two users don't end up with the same identity in the polynomial.
+We recommend that a range check is done inside the circuit or inside the smart contract. The range checks are to ensure that all usernames were less than the SNARK scalar field order so that two users don't end up with the same identity in the polynomial.
 
 #### Refer
 
@@ -381,14 +383,14 @@ function submitCommitment(
     uint256 timestamp // @audit : Future timestamp can be used. This can be used to manipulate
 ```
 
-`timestamp` is expected to be time at which the exchange has taken snapshot of all the balances but the `timestamp` is not validated. As this can be set to a future timestamp. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes:
+`timestamp` is expected to be the time at which the exchange has taken snapshot of all the balances but this `timestamp` is not validated. This may lead to potential manipulations by the exchange owner by combining off-chain and on-chain processes.
 
 - Inconsistencies/confusion by not maintaining a chronological order in the commitment.
 - Delaying the proof verification by promising a future commitment.
 
-To mitigate this, add the following vallidation checks to the timestamp :
+To mitigate this, add the following validation checks to the timestamp :
 
-- Add a check to make sure the timestamp is not in the future.
+- Add a check to ensure the timestamp is not in the future.
 - Store the last submitted timestamp and check the new timestamp is larger than the previous timestamp.
 
 ```diff
@@ -518,6 +520,8 @@ unconstrained cell in "Perform range check on balance 0 of user 1" region: Colum
 unconstrained cell in "Perform range check on balance 0 of user 1" region: Column { index: 5, column_type: Advice } (rotation: 0) -- very likely a bug.
 ```
 
+Here's the complete [report](./appendix/V2/Halo2-analyzer/output.md)
+
 ### 2. Polyexen-demo
 
 Polyexen (Polynomial Expression Engine) transforms circuits designed with the Halo2 API into the Plonkish Arithmetization Format (Plaf). Plaf is designed to standardize plonkish circuits for reuse in components compatible with plonkish arithmetization. The current implementation supports serializing a Plaf circuit into two parts:
@@ -530,28 +534,28 @@ Polyexen (Polynomial Expression Engine) transforms circuits designed with the Ha
 
 We used polyexen-demo to debug the assignments & double check the constraints. Here’s the output :
 
-- Fixed Columns - [CSV](https://github.com/zBlock-2/summa-report/blob/main/ugc_fixed.csv)
-- Lookup constraints - [ugc_lookups.toml](https://github.com/zBlock-2/summa-report/blob/main/ugc_lookups.toml)
-- Gate constraints - [ugc_polys.toml](https://github.com/zBlock-2/summa-report/blob/main/ugc_polys.toml)
-- Copy constraints - [ugc.toml](https://github.com/zBlock-2/summa-report/blob/main/ugc.toml)
+- Fixed Columns - [CSV](./appendix/V2/Polyexen/ugc_fixed.csv)
+- Lookup constraints - [ugc_lookups.toml](./appendix/V2/Polyexen/ugc_lookups.toml)
+- Gate constraints - [ugc_polys.toml](./appendix/V2/Polyexen/ugc_polys.toml)
+- Copy constraints - [ugc.toml](./appendix/V2/Polyexen/ugc.toml)
 
 ### 3. Highlighter
 
 Highlighter is a python script which runs against a HALO2 (or Rust) project and will highlight any code that may need to be checked a bit closer
 
-Highlighter works on a set of rules to look for error prone areas such as incorrect endianness, improper use of `unwrap`, finding `TODO` comments which might signify incomplete code, overflows & underflows. Here's the complete [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/Highlighter/output.md) of the findings by Highlighter.
+Highlighter works on a set of rules to look for error prone areas such as incorrect endianness, improper use of `unwrap`, finding `TODO` comments which might signify incomplete code, overflows & underflows. Here's the complete [report](./appendix/V2/Highlighter/output.md) of the findings by Highlighter.
 
 ### 4. NPM Audit
 
-`npm audit` scans your project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Node.js application secure by identifying and addressing potential risks in your packages. View the complete report of security vulnerabilities in the `contracts` package [here](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/npm-audit/output.md)
+`npm audit` scans your project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Node.js application secure by identifying and addressing potential risks in your packages. View the complete report of security vulnerabilities in the `contracts` package [here](./appendix/V2/npm-audit/output.md)
 
 ### 5. Cargo Audit
 
-`cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates. View the complete report of security vulnerabilities in `prover` and `backend` [here](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/cargo-audit/output.md).
+`cargo audit` scans your Rust project's dependencies for known security vulnerabilities, reports them with severity levels, and suggests fixes. It helps keep your Rust application secure by identifying and addressing potential risks in your crates. View the complete report of security vulnerabilities in `prover` and `backend` [here](./appendix/V2/cargo-audit/output.md).
 
 ### 6. Clippy
 
-`clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](https://github.com/zBlock-2/audit-report/blob/main/appendix/V2/clippy/output.md).
+`clippy` is a linter for Rust that checks your code for common mistakes and style issues. It provides helpful suggestions to improve your code quality and maintainability. Using `clippy` helps ensure your Rust code is clean, efficient, and follows best practices. Here's the [report](./appendix/V2/clippy/output.md).
 
 ## B - Fuzz Testing
 
