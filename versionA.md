@@ -1,4 +1,4 @@
-# yAcademy Summa Version A Review
+# yAcademy Summa Review - MST-based version
 
 Auditors:
 
