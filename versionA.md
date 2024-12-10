@@ -1,4 +1,4 @@
-# yAcademy Summa Review - MST-based version
+# yAcademy Summa Review - MST-based Protocol
 
 Auditors:
 
