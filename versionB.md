@@ -1,4 +1,4 @@
-# yAcademy Summa Version B Review
+# yAcademy Summa Review - KZG-based Protocol
 
 Auditors:
 
